@@ -117,7 +117,7 @@ RefCheck is also available as pre-commit hook!
 3. Install dependencies
 
    ```bash
-   poetry install
+   make init
    ```
 
 4. Run refcheck
@@ -125,6 +125,20 @@ RefCheck is also available as pre-commit hook!
    ```bash
    poetry run refcheck
    ```
+
+### Development Commands
+
+RefCheck uses a Makefile for common development tasks:
+
+```bash
+make help              # Show all available commands
+make format            # Format code with Ruff
+make lint              # Lint and fix code with Ruff
+make test              # Run tests with pytest
+make test-coverage     # Run tests with coverage report
+make qa                # Run all quality checks (format, lint, type check, etc.)
+make ci-qa             # Run all quality checks without modifying files (for CI)
+```
 
 ### Use Poetry for publishing to PyPI
 
