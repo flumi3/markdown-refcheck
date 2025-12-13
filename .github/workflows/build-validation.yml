@@ -6,10 +6,17 @@ on:
     branches: [main]
 
 jobs:
-  check-pr-title:
+  check-commits:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
 
       - name: Install commitizen
         run: pip install commitizen
@@ -20,12 +27,38 @@ jobs:
           cz check --message "${{ github.event.pull_request.title }}" || 
           (echo "Invalid PR title! Use Conventional Commit format (e.g., 'feat: add X')" && exit 1)
 
-  lint-and-test:
-    needs: check-pr-title
+      - name: Check all commits in PR
+        if: github.event_name == 'pull_request'
+        run: |
+          echo "Checking all commits in PR..."
+          cz check --rev-range origin/main..HEAD || 
+          (echo "Some commits don't follow Conventional Commit format!" && exit 1)
+
+  # Explicit job definitions for each Python version (matrix not supported on reusable workflows)
+  test-py310:
+    needs: check-commits
     uses: ./.github/workflows/lint-and-test.yml
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version: ["3.10", "3.11", "3.12", "3.13"]
     with:
-      python-version: ${{ matrix.python-version }}
+      python-version: "3.10"
+    secrets: inherit
+
+  test-py311:
+    needs: check-commits
+    uses: ./.github/workflows/lint-and-test.yml
+    with:
+      python-version: "3.11"
+    secrets: inherit
+
+  test-py312:
+    needs: check-commits
+    uses: ./.github/workflows/lint-and-test.yml
+    with:
+      python-version: "3.12"
+    secrets: inherit
+
+  test-py313:
+    needs: check-commits
+    uses: ./.github/workflows/lint-and-test.yml
+    with:
+      python-version: "3.13"
+    secrets: inherit

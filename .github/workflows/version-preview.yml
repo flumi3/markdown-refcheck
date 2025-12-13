@@ -1,0 +1,107 @@
+name: Version Preview
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  pull-requests: write
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install commitizen
+        run: pip install commitizen
+
+      - name: Get current version
+        id: current
+        run: |
+          CURRENT=$(grep 'version = "' pyproject.toml | head -1 | sed 's/.*version = "\(.*\)"/\1/')
+          echo "version=$CURRENT" >> $GITHUB_OUTPUT
+
+      - name: Preview next version
+        id: preview
+        run: |
+          # Get the bump type and next version
+          RESULT=$(cz bump --dry-run 2>&1) || true
+          echo "Commitizen output:"
+          echo "$RESULT"
+
+          # Extract next version if a bump would occur
+          if echo "$RESULT" | grep -q "tag to create:"; then
+            NEXT=$(echo "$RESULT" | grep "tag to create:" | sed 's/.*tag to create: v//')
+            BUMP_TYPE=$(echo "$RESULT" | grep "bump:" | sed 's/.*bump: //' || echo "patch")
+            echo "next_version=$NEXT" >> $GITHUB_OUTPUT
+            echo "bump_type=$BUMP_TYPE" >> $GITHUB_OUTPUT
+            echo "will_bump=true" >> $GITHUB_OUTPUT
+          else
+            echo "will_bump=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Update PR comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const currentVersion = '${{ steps.current.outputs.version }}';
+            const willBump = '${{ steps.preview.outputs.will_bump }}' === 'true';
+            const nextVersion = '${{ steps.preview.outputs.next_version }}';
+            const bumpType = '${{ steps.preview.outputs.bump_type }}';
+
+            const commentIdentifier = '<!-- version-preview-bot -->';
+
+            let body;
+            if (willBump) {
+              body = `${commentIdentifier}
+            ## Version Preview
+
+            | Current | → | Next | Bump Type |
+            |---------|---|------|-----------|
+            | \`v${currentVersion}\` | → | \`v${nextVersion}\` | **${bumpType}** |
+
+            This version will be released automatically when this PR is merged.`;
+            } else {
+              body = `${commentIdentifier}
+            ## Version Preview
+
+            | Current Version |
+            |-----------------|
+            | \`v${currentVersion}\` |
+
+            [!] No version bump detected. This PR doesn't contain commits that trigger a release (e.g., \`feat:\`, \`fix:\`, \`perf:\`).`;
+            }
+
+            // Find existing comment
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const existingComment = comments.find(c => c.body.includes(commentIdentifier));
+
+            if (existingComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existingComment.id,
+                body: body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: body,
+              });
+            }
