@@ -4,12 +4,150 @@ from unittest.mock import patch
 from refcheck.utils import (
     get_markdown_files_from_dir,
     get_markdown_files_from_args,
+    load_exclusion_patterns,
     print_green_background,
     print_red_background,
     print_red,
     print_green,
     print_yellow,
+    CHECK_IGNORE_DEFAULTS,
 )
+
+
+# === Test load_exclusion_patterns ===
+
+
+class TestLoadExclusionPatterns:
+    """Tests for load_exclusion_patterns function."""
+
+    def test_load_exclusion_patterns_file_exists(self, tmp_path, monkeypatch, capsys):
+        """Test loading exclusions when .refcheckignore file exists."""
+        # Create a temporary .refcheckignore file
+        ignore_file = tmp_path / ".refcheckignore"
+        ignore_content = """node_modules
+.git
+build
+dist
+# This is a comment
+venv
+"""
+        ignore_file.write_text(ignore_content)
+
+        # Change to the temporary directory
+        monkeypatch.chdir(tmp_path)
+
+        # Mock settings
+        with patch("refcheck.utils.settings") as mock_settings:
+            mock_settings.no_color = True
+            result = load_exclusion_patterns()
+
+        # Should return all non-empty lines (including comments in current implementation)
+        assert "node_modules" in result
+        assert ".git" in result
+        assert "build" in result
+        assert "dist" in result
+        assert "venv" in result
+
+        # Check that warning message was printed
+        captured = capsys.readouterr()
+        assert "Skipping these files and directories" in captured.out
+
+    def test_load_exclusion_patterns_file_missing(self, tmp_path, monkeypatch, capsys):
+        """Test loading exclusions when .refcheckignore file is missing."""
+        # Change to a directory without .refcheckignore
+        monkeypatch.chdir(tmp_path)
+
+        # Mock settings
+        with patch("refcheck.utils.settings") as mock_settings:
+            mock_settings.no_color = True
+            result = load_exclusion_patterns()
+
+        # Should return default exclusions
+        assert result == CHECK_IGNORE_DEFAULTS
+
+        # Check that warning message was printed (print_yellow)
+        captured = capsys.readouterr()
+        assert "Skipping these files and directories" in captured.out
+        # The logger.warning message won't be in capsys, it goes to logging
+
+    def test_load_exclusion_patterns_empty_file(self, tmp_path, monkeypatch, capsys):
+        """Test loading exclusions from an empty .refcheckignore file."""
+        # Create an empty .refcheckignore file
+        ignore_file = tmp_path / ".refcheckignore"
+        ignore_file.write_text("")
+
+        monkeypatch.chdir(tmp_path)
+
+        with patch("refcheck.utils.settings") as mock_settings:
+            mock_settings.no_color = True
+            result = load_exclusion_patterns()
+
+        # Should return empty list when file is empty
+        assert result == []
+
+    def test_load_exclusion_patterns_whitespace_only(self, tmp_path, monkeypatch, capsys):
+        """Test loading exclusions with whitespace-only lines."""
+        ignore_file = tmp_path / ".refcheckignore"
+        ignore_content = """
+node_modules
+
+.git
+   
+build
+"""
+        ignore_file.write_text(ignore_content)
+
+        monkeypatch.chdir(tmp_path)
+
+        with patch("refcheck.utils.settings") as mock_settings:
+            mock_settings.no_color = True
+            result = load_exclusion_patterns()
+
+        # Should skip empty and whitespace-only lines
+        expected = ["node_modules", ".git", "build"]
+        assert result == expected
+
+    def test_load_exclusion_patterns_comments_only(self, tmp_path, monkeypatch, capsys):
+        """Test loading exclusions file with only comments."""
+        ignore_file = tmp_path / ".refcheckignore"
+        ignore_content = """# Comment 1
+# Comment 2
+# Comment 3
+"""
+        ignore_file.write_text(ignore_content)
+
+        monkeypatch.chdir(tmp_path)
+
+        with patch("refcheck.utils.settings") as mock_settings:
+            mock_settings.no_color = True
+            result = load_exclusion_patterns()
+
+        # Comments starting with # are not filtered, but if the implementation
+        # strips them, this should be empty. Based on the code, it reads
+        # lines and strips them, so comments would be included.
+        # Let's verify actual behavior - comments are NOT filtered in current code
+        assert "# Comment 1" in result
+
+    def test_load_exclusion_patterns_strips_whitespace(self, tmp_path, monkeypatch, capsys):
+        """Test that exclusion patterns have whitespace stripped."""
+        ignore_file = tmp_path / ".refcheckignore"
+        ignore_content = """  node_modules  
+    .git    
+build
+"""
+        ignore_file.write_text(ignore_content)
+
+        monkeypatch.chdir(tmp_path)
+
+        with patch("refcheck.utils.settings") as mock_settings:
+            mock_settings.no_color = True
+            result = load_exclusion_patterns()
+
+        # Whitespace should be stripped
+        assert "node_modules" in result
+        assert ".git" in result
+        assert "build" in result
+        assert "  node_modules  " not in result
 
 
 # === Test get_markdown_files_from_dir ===
@@ -105,14 +243,10 @@ def mock_os_path_normpath(path):
         ),
     ],
 )
-def test_get_markdown_files_from_args(
-    paths, exclude, expected_files, expected_warnings, monkeypatch, capsys
-):
+def test_get_markdown_files_from_args(paths, exclude, expected_files, expected_warnings, monkeypatch, capsys):
     # Apply mocks
     monkeypatch.setattr("refcheck.utils.load_exclusion_patterns", mock_load_exclusion_patterns)
-    monkeypatch.setattr(
-        "refcheck.utils.get_markdown_files_from_dir", mock_get_markdown_files_from_dir
-    )
+    monkeypatch.setattr("refcheck.utils.get_markdown_files_from_dir", mock_get_markdown_files_from_dir)
     monkeypatch.setattr(os.path, "isdir", mock_os_path_isdir)
     monkeypatch.setattr(os.path, "isfile", mock_os_path_isfile)
     monkeypatch.setattr(os.path, "normpath", mock_os_path_normpath)
