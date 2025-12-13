@@ -77,7 +77,7 @@ class ReferenceChecker:
             if settings.no_color:
                 print("No broken references!")
             else:
-                print(print_green("\U0001F389 No broken references!"))
+                print(print_green("\U0001f389 No broken references!"))
 
         print("====================================================================")
 
@@ -119,13 +119,12 @@ def main() -> bool:
         logging.info(f"Checking {len(image_refs)} image references ...")
         checker.check_references(image_refs)
 
-        if len(basic_refs) == 0 and len(image_refs) == 0:
-            print("No references found.")
+        inline_links = references["inline_links"]
+        logging.info(f"Checking {len(inline_links)} inline links ...")
+        checker.check_references(inline_links)
 
-        # TODO: activate when pre-processing is implemented in parsers
-        # inline_links = references["inline_links"]
-        # logging.info(f"Checking {len(inline_links)} inline links ...")
-        # checker.check_references(inline_links, check_remote)
+        if len(basic_refs) == 0 and len(image_refs) == 0 and len(inline_links) == 0:
+            print("No references found.")
 
     checker.print_summary()
     return not bool(checker.broken_references)

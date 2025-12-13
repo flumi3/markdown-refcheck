@@ -8,11 +8,11 @@ logger = logging.getLogger()
 CODE_BLOCK_PATTERN = re.compile(r"```(?P<content>[\s\S]*?)```")
 
 # Basic Markdown references
-BASIC_REFERENCE_PATTERN = re.compile(r"!*\[(?P<text>.+)\]\((?P<link>.+)\)")  # []() and ![]()
+BASIC_REFERENCE_PATTERN = re.compile(r"!*\[(?P<text>[^\]]+)\]\((?P<link>[^)]+)\)")  # []() and ![]()
 BASIC_IMAGE_PATTERN = re.compile(r"!\[(?P<text>[^(){}\[\]]+)\]\((?P<link>[^(){}\[\]]+)\)")  # ![]()
 
 # Inline Links - <http://example.com>
-INLINE_LINK_PATTERN = re.compile(r"<(?P<link>.+)>")
+INLINE_LINK_PATTERN = re.compile(r"<(?P<link>[^>]+)>")
 
 RAW_LINK_PATTERN = re.compile(r"(^| )(?:(https?://\S+))")  # all links that are surrounded by nothing or spaces
 HTML_LINK_PATTERN = re.compile(r"<a\s+(?:[^>]*?\s+)?href=([\"\'])(.*?)\1")  # <a href="http://example.com">
@@ -121,22 +121,33 @@ class MarkdownParser:
         self, references: list[ReferenceMatch], code_blocks: list[ReferenceMatch]
     ) -> list[ReferenceMatch]:
         """Drop references that are part of code blocks."""
-        dropped_counter = 0
         logger.info("Dropping references that are part of code blocks ...")
+
+        # Filter out references that are inside code blocks
+        filtered_references = []
+        dropped_counter = 0
+
         for ref in references:
+            is_in_code_block = False
             for code_block in code_blocks:
                 logger.debug(ref.match.group(0))
                 logger.debug(code_block.match.group(1))
 
                 if ref.match.group(0) in code_block.match.group(1):
                     logger.info(f"Dropping reference: {ref.match.group(0)}")
-                    references.remove(ref)
+                    is_in_code_block = True
+                    dropped_counter += 1
                     break
+
+            if not is_in_code_block:
+                filtered_references.append(ref)
+
         if dropped_counter > 0:
             logger.info(f"Dropped {dropped_counter} references.")
         else:
             logger.info("No code block references found.")
-        return references
+
+        return filtered_references
 
     def _is_remote_reference(self, link: str) -> bool:
         """Check if a link is a remote reference."""
@@ -161,13 +172,25 @@ class MarkdownParser:
         return references
 
     def _process_inline_links(self, file_path: str, matches: list[ReferenceMatch]) -> list[Reference]:
-        # TODO: implement.
-        # docs\Understanding-Markdown-References.md:49: <a href="https://www.wikipedia.org">Wikipedia</a>
-        # docs\Understanding-Markdown-References.md:50: <a href='https://www.github.com'>GitHub</a>
-        # docs\Understanding-Markdown-References.md:56: <img src="https://www.openai.com/logo.png" alt="OpenAI Logo">
-        # docs\Understanding-Markdown-References.md:57: <img src="/assets/img.png" alt="Absolute Path Image">
-        # docs\Understanding-Markdown-References.md:58: <img src="image.png" alt="Relative Path Image">
-        pass
+        """Process inline links enclosed in angle brackets.
+
+        Handles patterns like:
+        - <http://example.com>
+        - <a href="https://www.example.org">Example</a>
+        - <img src="https://example.com/image.png" alt="Image">
+        """
+        references: list[Reference] = []
+        for match in matches:
+            link = match.match.group("link")
+            reference = Reference(
+                file_path=file_path,
+                line_number=match.line_number,
+                syntax=match.match.group(0),
+                link=link,
+                is_remote=self._is_remote_reference(link),
+            )
+            references.append(reference)
+        return references
 
     def _find_matches_with_line_numbers(self, pattern: Pattern[str], text: str) -> list[ReferenceMatch]:
         """Find regex matches along with their line numbers."""
