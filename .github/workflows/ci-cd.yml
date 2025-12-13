@@ -28,6 +28,7 @@ jobs:
       url: https://pypi.org/project/refcheck/
     permissions:
       id-token: write
+      contents: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
