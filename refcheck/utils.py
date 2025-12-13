@@ -19,7 +19,7 @@ CHECK_IGNORE_DEFAULTS = [
 ]
 
 
-def load_exclusion_patterns() -> list:
+def load_exclusion_patterns() -> list[str]:
     """Read exclusions from the .refcheckignore file."""
     if not os.path.isfile(IGNORE_FILE):
         logger.warning(f"Could not find {IGNORE_FILE}. Using default exclusions.")
@@ -33,8 +33,10 @@ def load_exclusion_patterns() -> list:
     return exclusions
 
 
-def get_markdown_files_from_dir(root_dir: str, exclude: list[str] = []) -> list:
+def get_markdown_files_from_dir(root_dir: str, exclude: list[str] | None = None) -> list[str]:
     """Traverse the directory to get all markdown files."""
+    if exclude is None:
+        exclude = []
     print(f"[+] Searching for markdown files in {os.path.abspath(root_dir)} ...")
     exclude_set = set(os.path.normpath(path) for path in exclude)
     markdown_files = []
@@ -54,9 +56,11 @@ def get_markdown_files_from_dir(root_dir: str, exclude: list[str] = []) -> list:
     return markdown_files
 
 
-def get_markdown_files_from_args(paths: list[str], exclude: list[str] = []) -> list:
+def get_markdown_files_from_args(paths: list[str], exclude: list[str] | None = None) -> list[str]:
     """Retrieve all markdown files specified by the user."""
     # Read additional exclusions from the ignore file
+    if exclude is None:
+        exclude = []
     exclude += load_exclusion_patterns()
 
     exclude_set = set(os.path.normpath(path) for path in exclude)
