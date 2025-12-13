@@ -17,10 +17,23 @@ options:
   --allow-absolute      Allow absolute path references like [ref](/path/to/file.md)
 ```
 
+[![Downloads](https://static.pepy.tech/badge/refcheck)](https://pepy.tech/project/refcheck)
 [![CI/CD](https://github.com/flumi3/refcheck/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/flumi3/refcheck/actions/workflows/ci-cd.yml)
 [![codecov](https://codecov.io/gh/flumi3/refcheck/graph/badge.svg)](https://codecov.io/gh/flumi3/refcheck)
-[![Downloads](https://static.pepy.tech/badge/refcheck)](https://pepy.tech/project/refcheck)
 ![Python](https://img.shields.io/badge/python-3.10+-blue.svg)
+
+## Features
+
+- 🔍 **Comprehensive Reference Detection** - Find and validate various reference patterns in Markdown files
+- ❌ **Broken Link Highlighting** - Quickly identify broken references with clear error messages
+- 📁 **File Path Validation** - Support for both absolute and relative file paths to any file type
+- 🌐 **Remote URL Checking** - Validate external HTTP/HTTPS links (optional with `--check-remote`)
+- 🎯 **Header Reference Validation** - Verify links to specific sections within Markdown files
+- 🛠️ **User-Friendly CLI** - Simple and intuitive command-line interface
+- ⚙️ **CI/CD Ready** - Perfect for automated quality checks in your documentation workflows
+- 🎨 **Colored Output** - Clear, color-coded results for easy scanning (disable with `--no-color`)
+- 📊 **Detailed Reporting** - Summary statistics and line-by-line reference validation
+- 🚀 **Pre-commit Integration** - Available as a pre-commit hook for automated validation
 
 ## Installation
 
@@ -75,15 +88,6 @@ tests\sample_markdown.md:52: https://www.openai.com/logo.png
 ====================================================================
 ```
 
-## Features
-
-- Find and check various reference patterns in Markdown files
-- Highlight broken references
-- Validate absolute and relative file paths to any file type
-- Support for checking remote references, such as \[Google\]\(<https://www.google.com>)
-- User friendly CLI
-- Easy CI pipeline integration - perfect for ensuring the quality of your Wiki
-
 ## Pre-commit Hook
 
 RefCheck is also available as pre-commit hook!
@@ -96,108 +100,28 @@ RefCheck is also available as pre-commit hook!
       args: ["docs/", "-e", "docs/filetoexclude.md"] # e.g. scan the docs/ folder and exclude a file
 ```
 
+For more advanced configuration options, see the [Integration Guide](docs/Integration-Guide.md).
+
 ## Contributing
 
-### Commit Convention
+Contributions are welcome!
 
-This project uses [Conventional Commits](https://www.conventionalcommits.org/) for automated versioning. Your commit
-messages must follow this format:
+Please see [CONTRIBUTING.md](CONTRIBUTING.md) for:
 
-```text
-<type>(<scope>): <description>
+- Development setup instructions
+- Commit message conventions
+- Code quality standards
+- Testing requirements
+- Pull request guidelines
 
-[optional body]
+## Documentation
 
-[optional footer(s)]
-```
+For more detailed information, check out the documentation:
 
-**Types that trigger version bumps:**
+- [CLI Reference](docs/CLI-Reference.md) - Complete command-line options and usage
+- [Integration Guide](docs/Integration-Guide.md) - CI/CD and workflow integration
+- [Examples](docs/Examples.md) - Real-world usage examples
 
-- `feat:` - New feature → **minor** version bump (0.1.0 → 0.2.0)
-- `fix:` - Bug fix → **patch** version bump (0.1.0 → 0.1.1)
-- `perf:` - Performance improvement → **patch** version bump
-- `BREAKING CHANGE:` footer or `!` after type → **major** version bump (0.1.0 → 1.0.0)
+## License
 
-**Types that don't trigger releases:**
-
-- `docs:` - Documentation only
-- `chore:` - Maintenance tasks
-- `ci:` - CI/CD changes
-- `style:` - Code style/formatting
-- `refactor:` - Code refactoring
-- `test:` - Adding or updating tests
-
-**Examples:**
-
-```bash
-feat: add support for remote URL validation
-fix: handle empty markdown files gracefully
-docs: update installation instructions
-feat!: change CLI argument format
-```
-
-### Getting Started
-
-1. Install Poetry
-
-   ```bash
-   pipx install poetry
-   ```
-
-2. Make Poetry install virtual environments in project root
-
-   ```bash
-   poetry config virtualenvs.in-project true
-   ```
-
-3. Install dependencies and pre-commit hooks
-
-   ```bash
-   make init
-   ```
-
-4. Run refcheck
-
-   ```bash
-   poetry run refcheck
-   ```
-
-### Development Commands
-
-RefCheck uses a Makefile for common development tasks:
-
-```bash
-make help              # Show all available commands
-make format            # Format code with Ruff
-make lint              # Lint and fix code with Ruff
-make test              # Run tests with pytest
-make test-coverage     # Run tests with coverage report
-make qa                # Run all quality checks (format, lint, type check, etc.)
-make ci-qa             # Run all quality checks without modifying files (for CI)
-make bump-version      # Preview what the next version would be
-make changelog         # Show unreleased changelog entries
-make check-version     # Display current and next version
-make update-hooks      # Update pre-commit hooks to latest versions
-```
-
-### Use Poetry for publishing to PyPI
-
-1. [Create an API token](https://pypi.org/manage/account/publishing/) for authenticating to the PyPI project.
-
-2. Configure Poetry to authenticate with PyPI:
-
-   ```bash
-   poetry config pypi-token.pypi YOUR_PYPI_API_TOKEN
-   ```
-
-3. Build the package:
-
-   ```bash
-   Poetry build
-   ```
-
-4. Publish to PyPI:
-
-   ```bash
-   Poetry publish
-   ```
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

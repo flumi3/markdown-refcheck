@@ -16,8 +16,8 @@ Here are two examples:
 
 ## Image References
 
-You can embed images in Markdown by using an exclamation mark followed by alt text in square brackets and the image
-path or URL in parentheses. Images can be referenced using either absolute or relative paths:
+You can embed images in Markdown by using an exclamation mark followed by alt text in square brackets and the image path
+or URL in parentheses. Images can be referenced using either absolute or relative paths:
 
 - An absolute path image: ![Some Logo](/img/image.png)
 - A relative path image: ![Sample Image](img.png)
@@ -30,14 +30,16 @@ project's directory structure:
 - A reference to a Python script: [Main Python Script](src/main.py)
 - A link to a user guide Markdown file: [User Guide](docs/user_guide.md)
 - An absolute path reference: [Good Documentation](/docs/good_doc.md)
-- An absolute path reference that is working: [Understanding-Markdown-References](/docs/Understanding-Markdown-References.md)
+- An absolute path reference that is working:
+  [Understanding-Markdown-References](/docs/Understanding-Markdown-References.md)
 
 ## Markdown Links with Headers
 
 Sometimes, you might want to link to a specific section within a Markdown file. This is done by adding a hash symbol
 followed by the header text:
 
-- A link to installation instructions in another file: [Installation Instructions](other-directory/README.md#installation-instructions)
+- A link to installation instructions in another file:
+  [Installation Instructions](other-directory/README.md#installation-instructions)
 - A getting-started guide link: [Getting Started](/path/to/README.md#getting-started)
 - A header link with spaces: [Markdown Links with Headers](#markdown-links-with-headers)
 - A header link in the same file: [Local File References](#local-file-references)
@@ -84,8 +86,8 @@ Here is a footnote reference[^1].
 
 Sometimes, you may have plain URLs in your text that are not part of a Markdown link syntax:
 
-- Direct link to a resource: https://www.example.com
-- Standalone raw link: https://www.example.com
+- Direct link to a resource: <https://www.example.com>
+- Standalone raw link: <https://www.example.com>
 
 ## Additional File Types
 
@@ -112,3 +114,4 @@ Code blocks often contain references that should not be checked:
 ```Markdown
 # Example Code Block
 [Link](https://example.com)
+```
