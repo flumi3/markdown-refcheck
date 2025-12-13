@@ -35,7 +35,13 @@ build_command = "pip install poetry && python -m poetry build"
 version_toml = ["pyproject.toml:tool.poetry.version"]
 version_variables = [
     "pyproject.toml:tool.poetry.version",
-    "README.md:rev:tf"
+    "README.md:rev:tf",
+    "docs/CLI-Reference.md:rev:tf",
+    "docs/Development-Guide.md:rev:tf",
+    "docs/Examples.md:rev:tf",
+    "docs/Integration-Guide.md:rev:tf",
+    "CONTRIBUTING.md:rev:tf",
+    "ideas.md:rev:tf"
 ]
 tag_format = "v{version}"
 
