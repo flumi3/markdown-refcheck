@@ -19,10 +19,10 @@ options:
 
 [![CI/CD](https://github.com/flumi3/refcheck/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/flumi3/refcheck/actions/workflows/ci-cd.yml)
 [![Downloads](https://static.pepy.tech/badge/refcheck)](https://pepy.tech/project/refcheck)
-![Python](https://img.shields.io/badge/python-3.9+-blue.svg)
+![Python](https://img.shields.io/badge/python-3.10+-blue.svg)
 
-> :construction: RefCheck is still in its development. If you encounter any issues or have suggestions,
-> feel free to open an issue or pull request.
+> :construction: RefCheck is still in its development. If you encounter any issues or have suggestions, feel free to
+> open an issue or pull request.
 
 ## Installation
 
@@ -95,7 +95,7 @@ RefCheck is also available as pre-commit hook!
   rev: v0.3.0
   hooks:
     - id: refcheck
-      args: ["docs/", "-e", "docs/filetoexclude.md"]  # e.g. scan the docs/ folder and exclude a file
+      args: ["docs/", "-e", "docs/filetoexclude.md"] # e.g. scan the docs/ folder and exclude a file
 ```
 
 ## Contributing
