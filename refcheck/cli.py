@@ -1,4 +1,5 @@
 import argparse
+import sys
 from argparse import Namespace
 
 
@@ -54,5 +55,6 @@ def get_command_line_arguments() -> Namespace:
     args = parser.parse_args()
     if not args.paths:
         parser.print_help()
+        sys.exit(0)
 
     return args
