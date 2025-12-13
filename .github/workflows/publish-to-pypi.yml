@@ -31,7 +31,7 @@ jobs:
           poetry config virtualenvs.create false
 
       - name: Install Dependencies
-        run: poetry install --sync --no-interaction
+        run: make init
 
       - name: Build
         run: poetry build

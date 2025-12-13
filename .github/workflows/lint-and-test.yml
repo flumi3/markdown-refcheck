@@ -28,10 +28,10 @@ jobs:
         run: poetry config virtualenvs.create false
 
       - name: Install dependencies
-        run: poetry install --sync --no-interaction
+        run: make init
 
-      - name: Lint with Ruff
-        run: poetry run ruff check
+      - name: Run CI Quality Checks
+        run: make ci-qa
 
-      - name: Test with pytest
-        run: pytest
+      - name: Run Tests
+        run: make test
