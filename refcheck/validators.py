@@ -157,10 +157,15 @@ def is_valid_markdown_reference(ref: Reference) -> bool:
     if not ref.link.startswith("#"):  # Skip if the reference is a header in the same file because the file exists
         if not file_exists(ref.file_path, target_path):
             return False
+        # Resolve the absolute path for header checking
+        abs_target_path = os.path.join(os.path.dirname(ref.file_path), target_path)
+    else:
+        # For same-file references, use the origin file path
+        abs_target_path = ref.file_path
 
     # Check if the referenced header exists
-    if referenced_header and not _header_exists(target_path, referenced_header):
-        logger.error(f"Referenced header does not exist in {target_path}: {referenced_header}")
+    if referenced_header and not _header_exists(abs_target_path, referenced_header):
+        logger.error(f"Referenced header does not exist in {abs_target_path}: {referenced_header}")
         return False
 
     return True
