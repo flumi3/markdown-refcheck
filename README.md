@@ -18,11 +18,9 @@ options:
 ```
 
 [![CI/CD](https://github.com/flumi3/refcheck/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/flumi3/refcheck/actions/workflows/ci-cd.yml)
+[![codecov](https://codecov.io/gh/flumi3/refcheck/graph/badge.svg)](https://codecov.io/gh/flumi3/refcheck)
 [![Downloads](https://static.pepy.tech/badge/refcheck)](https://pepy.tech/project/refcheck)
 ![Python](https://img.shields.io/badge/python-3.10+-blue.svg)
-
-> :construction: RefCheck is still in its development. If you encounter any issues or have suggestions, feel free to
-> open an issue or pull request.
 
 ## Installation
 
@@ -100,6 +98,44 @@ RefCheck is also available as pre-commit hook!
 
 ## Contributing
 
+### Commit Convention
+
+This project uses [Conventional Commits](https://www.conventionalcommits.org/) for automated versioning. Your commit
+messages must follow this format:
+
+```text
+<type>(<scope>): <description>
+
+[optional body]
+
+[optional footer(s)]
+```
+
+**Types that trigger version bumps:**
+
+- `feat:` - New feature → **minor** version bump (0.1.0 → 0.2.0)
+- `fix:` - Bug fix → **patch** version bump (0.1.0 → 0.1.1)
+- `perf:` - Performance improvement → **patch** version bump
+- `BREAKING CHANGE:` footer or `!` after type → **major** version bump (0.1.0 → 1.0.0)
+
+**Types that don't trigger releases:**
+
+- `docs:` - Documentation only
+- `chore:` - Maintenance tasks
+- `ci:` - CI/CD changes
+- `style:` - Code style/formatting
+- `refactor:` - Code refactoring
+- `test:` - Adding or updating tests
+
+**Examples:**
+
+```bash
+feat: add support for remote URL validation
+fix: handle empty markdown files gracefully
+docs: update installation instructions
+feat!: change CLI argument format
+```
+
 ### Getting Started
 
 1. Install Poetry
@@ -114,7 +150,7 @@ RefCheck is also available as pre-commit hook!
    poetry config virtualenvs.in-project true
    ```
 
-3. Install dependencies
+3. Install dependencies and pre-commit hooks
 
    ```bash
    make init
@@ -138,6 +174,10 @@ make test              # Run tests with pytest
 make test-coverage     # Run tests with coverage report
 make qa                # Run all quality checks (format, lint, type check, etc.)
 make ci-qa             # Run all quality checks without modifying files (for CI)
+make bump-version      # Preview what the next version would be
+make changelog         # Show unreleased changelog entries
+make check-version     # Display current and next version
+make update-hooks      # Update pre-commit hooks to latest versions
 ```
 
 ### Use Poetry for publishing to PyPI
