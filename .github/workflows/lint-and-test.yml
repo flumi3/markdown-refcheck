@@ -52,6 +52,7 @@ jobs:
           poetry run coverage report --fail-under=80
 
       # - name: Upload coverage to Codecov
+      #   if: inputs.python-version == '3.12'
       #   uses: codecov/codecov-action@v4
       #   with:
       #     files: ./coverage.xml
@@ -61,8 +62,9 @@ jobs:
       #     CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Upload coverage HTML report
+        if: inputs.python-version == '3.12'
         uses: actions/upload-artifact@v4
         with:
-          name: coverage-report-${{ inputs.python-version }}
+          name: coverage-report
           path: htmlcov/
           retention-days: 7
