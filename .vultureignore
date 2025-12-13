@@ -1,0 +1,11 @@
+# Vulture ignore file for refcheck
+# Items here are false positives or intentionally kept for future use
+
+_format_action_invocation
+RAW_LINK_PATTERN
+HTML_LINK_PATTERN
+HTML_IMAGE_PATTERN
+_process_inline_links
+print_green_background
+print_red_background
+is_valid_remote_reference
