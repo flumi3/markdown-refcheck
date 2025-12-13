@@ -247,7 +247,7 @@ jobs:
 # .pre-commit-config.yaml
 repos:
   - repo: https://github.com/flumi3/refcheck
-    rev: v0.3.0
+    rev: v0.4.1
     hooks:
       - id: refcheck
         args: ["docs/", "README.md"]
@@ -374,7 +374,7 @@ make check-docs-changed
 ```yaml
 repos:
   - repo: https://github.com/flumi3/refcheck
-    rev: v0.3.0
+    rev: v0.4.1
     hooks:
       - id: refcheck
         args: ["docs/", "README.md", "CONTRIBUTING.md"]

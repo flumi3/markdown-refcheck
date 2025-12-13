@@ -31,7 +31,7 @@ Create or update `.pre-commit-config.yaml` in your repository root:
 ```yaml
 repos:
   - repo: https://github.com/flumi3/refcheck
-    rev: v0.3.0 # Use the latest version
+    rev: v0.4.1 # Use the latest version
     hooks:
       - id: refcheck
         args: ["docs/"] # Specify paths to check
@@ -59,7 +59,7 @@ pre-commit run refcheck --files README.md docs/guide.md
 
 ```yaml
 - repo: https://github.com/flumi3/refcheck
-  rev: v0.3.0
+  rev: v0.4.1
   hooks:
     - id: refcheck
       args: ["docs/", "README.md", "CONTRIBUTING.md"]
@@ -69,7 +69,7 @@ pre-commit run refcheck --files README.md docs/guide.md
 
 ```yaml
 - repo: https://github.com/flumi3/refcheck
-  rev: v0.3.0
+  rev: v0.4.1
   hooks:
     - id: refcheck
       args:
@@ -83,7 +83,7 @@ pre-commit run refcheck --files README.md docs/guide.md
 
 ```yaml
 - repo: https://github.com/flumi3/refcheck
-  rev: v0.3.0
+  rev: v0.4.1
   hooks:
     - id: refcheck
       files: '\.md$' # Only run on .md files
