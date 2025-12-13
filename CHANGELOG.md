@@ -1,12 +1,23 @@
 # CHANGELOG
 
 
+## v0.4.1 (2025-12-13)
+
+### Bug Fixes
+
+- Remove outdated reference to ideas.md in version_variables
+  ([`04c4f46`](https://github.com/flumi3/markdown-refcheck/commit/04c4f46d0f33a605f799d3d8c6bf67fa62a633fc))
+
+
 ## v0.4.0 (2025-12-13)
 
 ### Bug Fixes
 
 - Ensure command line arguments are only parsed when not running under pytest
   ([`b36450b`](https://github.com/flumi3/markdown-refcheck/commit/b36450ba4d3b0f658b854ad2fa42f1528064c8ec))
+
+- Ensure that all docs that reference refchecks version get updated on version update
+  ([`750c3d0`](https://github.com/flumi3/markdown-refcheck/commit/750c3d0db050825b587c9ebe385eb69142b03b36))
 
 - Ignore inline code fenced references as they are not real references
   ([`1b7cd7c`](https://github.com/flumi3/markdown-refcheck/commit/1b7cd7cfa3483205f744e3ebec52a322953b7ea3))
@@ -47,6 +58,9 @@
   ([`53d0a75`](https://github.com/flumi3/markdown-refcheck/commit/53d0a7572b4954fe2b52f4d46eaf054fb8e88305))
 
 - also set line length to 100
+
+- Only enable security updates for dependabot
+  ([`49948cd`](https://github.com/flumi3/markdown-refcheck/commit/49948cd9c71b0070b8b5d0a0af58cfacddeb11e2))
 
 - Remove obsolete publish-to-pypi workflow
   ([`5c71104`](https://github.com/flumi3/markdown-refcheck/commit/5c711042d50aeef82f9dfd4e1218116693519576))
@@ -262,6 +276,9 @@ Co-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.c
 
 - Fix trusted publishing exchange failure
   ([`a8d2ee3`](https://github.com/flumi3/markdown-refcheck/commit/a8d2ee3bc03265aecd12bb66ef166a711e7b4765))
+
+- Only upload one coverage report for python 3.12 and not every version that is tested
+  ([`41480d2`](https://github.com/flumi3/markdown-refcheck/commit/41480d2b3e84a92c5654c57363490ce61d3264a6))
 
 - Update ci workflows to new makefile setup and tools
   ([`c17632c`](https://github.com/flumi3/markdown-refcheck/commit/c17632cd344a487a6323b8671a56445db56bb91b))

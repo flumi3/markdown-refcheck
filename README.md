@@ -96,7 +96,7 @@ RefCheck is also available as pre-commit hook!
 
 ```yaml
 - repo: https://github.com/flumi3/refcheck
-  rev: v0.4.0
+  rev: v0.4.1
   hooks:
     - id: refcheck
       args: ["docs/", "-e", "docs/filetoexclude.md"] # e.g. scan the docs/ folder and exclude a file
