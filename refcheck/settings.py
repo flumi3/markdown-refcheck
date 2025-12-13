@@ -1,16 +1,27 @@
+import sys
+
 from refcheck.cli import get_command_line_arguments
 
 
 class Settings:
     def __init__(self):
-        args = get_command_line_arguments()
+        # Only parse arguments if not running under pytest
+        if "pytest" in sys.modules:
+            self._paths = []
+            self._verbose = False
+            self._check_remote = False
+            self._no_color = False
+            self._allow_absolute = False
+            self._exclude = []
+        else:
+            args = get_command_line_arguments()
 
-        self._paths = args.paths
-        self._verbose = args.verbose
-        self._check_remote = args.check_remote
-        self._no_color = args.no_color
-        self._allow_absolute = args.allow_absolute
-        self._exclude = args.exclude
+            self._paths = args.paths
+            self._verbose = args.verbose
+            self._check_remote = args.check_remote
+            self._no_color = args.no_color
+            self._allow_absolute = args.allow_absolute
+            self._exclude = args.exclude
 
     def __str__(self) -> str:
         return f"Settings(paths={self.paths}, verbose={self.verbose}, check_remote={self.check_remote}, no_color={self.no_color}, allow_absolute={self.allow_absolute}, exclude={self.exclude})"
