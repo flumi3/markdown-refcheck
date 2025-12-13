@@ -243,10 +243,14 @@ def mock_os_path_normpath(path):
         ),
     ],
 )
-def test_get_markdown_files_from_args(paths, exclude, expected_files, expected_warnings, monkeypatch, capsys):
+def test_get_markdown_files_from_args(
+    paths, exclude, expected_files, expected_warnings, monkeypatch, capsys
+):
     # Apply mocks
     monkeypatch.setattr("refcheck.utils.load_exclusion_patterns", mock_load_exclusion_patterns)
-    monkeypatch.setattr("refcheck.utils.get_markdown_files_from_dir", mock_get_markdown_files_from_dir)
+    monkeypatch.setattr(
+        "refcheck.utils.get_markdown_files_from_dir", mock_get_markdown_files_from_dir
+    )
     monkeypatch.setattr(os.path, "isdir", mock_os_path_isdir)
     monkeypatch.setattr(os.path, "isfile", mock_os_path_isfile)
     monkeypatch.setattr(os.path, "normpath", mock_os_path_normpath)

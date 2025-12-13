@@ -12,7 +12,9 @@ class TestIsValidRemoteReference:
         """Test valid remote reference with 200 status code."""
         result = is_valid_remote_reference("https://www.example.com")
         assert result is True
-        mock_http_success.assert_called_once_with("https://www.example.com", timeout=5, verify=False)
+        mock_http_success.assert_called_once_with(
+            "https://www.example.com", timeout=5, verify=False
+        )
 
     def test_valid_remote_reference_301(self, mock_http_301):
         """Test valid remote reference with 301 redirect."""

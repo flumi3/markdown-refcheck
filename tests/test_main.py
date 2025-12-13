@@ -345,7 +345,9 @@ class TestMainFunction:
             mock_settings.no_color = True
             mock_settings.is_valid.return_value = True
 
-            with mock.patch("refcheck.main.get_markdown_files_from_args", return_value=[source_file]):
+            with mock.patch(
+                "refcheck.main.get_markdown_files_from_args", return_value=[source_file]
+            ):
                 result = main()
 
         assert result is True
@@ -424,7 +426,9 @@ class TestMainFunction:
             mock_settings.no_color = True
             mock_settings.is_valid.return_value = True
 
-            with mock.patch("refcheck.main.get_markdown_files_from_args", return_value=[file1, file2]):
+            with mock.patch(
+                "refcheck.main.get_markdown_files_from_args", return_value=[file1, file2]
+            ):
                 result = main()
 
         assert result is True
