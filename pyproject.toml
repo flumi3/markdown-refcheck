@@ -18,6 +18,7 @@ ruff = ">=0.9.7,<0.12.0"
 mypy = "^1.13.0"
 vulture = "^2.13"
 deptry = "^0.22.0"
+pre-commit = "^4.0.0"
 
 [tool.poetry.scripts]
 refcheck = "refcheck.main:main"
@@ -26,14 +27,26 @@ refcheck = "refcheck.main:main"
 line-length = 100
 
 [tool.semantic_release]
-major_on_zero = false
-build_command = "pip install poetry && poetry build"
+commit_parser = "angular"
+branch = "main"
+major_on_zero = true
+build_command = "poetry build"
 version_toml = ["pyproject.toml:tool.poetry.version"]
 version_variables = [
     "pyproject.toml:tool.poetry.version",
     "README.md:rev:tf"
 ]
 tag_format = "v{version}"
+
+[tool.commitizen]
+name = "cz_conventional_commits"
+version = "0.3.0"
+tag_format = "v$version"
+update_changelog_on_bump = true
+version_files = [
+    "pyproject.toml:tool.poetry.version",
+    "pyproject.toml:tool.commitizen.version"
+]
 
 [tool.vulture]
 min_confidence = 80
