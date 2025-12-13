@@ -98,15 +98,16 @@ ci-qa: format-check lint-check check-types check-dead-code check-unused-deps ## 
 # --- Tests ---
 
 .PHONY: test
-test: ## Run tests with pytest
+test: ## Run tests with pytest and coverage
 	@echo "$(COLOR_BLUE_BG)$(COLOR_BOLD) ➜ Running tests with Pytest $(COLOR_RESET)"
-	@poetry run pytest
+	@poetry run pytest --cov=refcheck --cov-report=term-missing --cov-fail-under=80
 	@echo "$(COLOR_GREEN) ✔ Done$(COLOR_RESET)"
 
 .PHONY: test-coverage
-test-coverage: ## Run tests with coverage report
+test-coverage: ## Run tests with detailed coverage report
 	@echo "$(COLOR_BLUE_BG)$(COLOR_BOLD) ➜ Running tests with coverage$(COLOR_RESET)"
-	@poetry run pytest --cov=refcheck --cov-report=term-missing
+	@poetry run pytest --cov=refcheck --cov-report=term-missing --cov-report=html --cov-fail-under=80
+	@echo "$(COLOR_YELLOW) ℹ HTML coverage report generated in htmlcov/$(COLOR_RESET)"
 	@echo "$(COLOR_GREEN) ✔ Done$(COLOR_RESET)"
 
 # --- Version Management ---
