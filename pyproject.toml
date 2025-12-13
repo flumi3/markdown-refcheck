@@ -31,7 +31,7 @@ line-length = 100
 commit_parser = "angular"
 branch = "main"
 major_on_zero = true
-build_command = "poetry build"
+build_command = "pip install poetry && python -m poetry build"
 version_toml = ["pyproject.toml:tool.poetry.version"]
 version_variables = [
     "pyproject.toml:tool.poetry.version",
