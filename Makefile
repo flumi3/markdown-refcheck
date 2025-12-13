@@ -41,6 +41,8 @@ help: ## Display this help message
 init: ## Initialize the development environment for all modules
 	@echo "$(COLOR_BLUE_BG)$(COLOR_BOLD) ➜ Initializing Core Environment $(COLOR_RESET)"
 	@poetry install
+	@echo "$(COLOR_BLUE_BG)$(COLOR_BOLD) ➜ Installing pre-commit hooks $(COLOR_RESET)"
+	@poetry run pre-commit install --hook-type commit-msg --hook-type pre-push
 	@echo "$(COLOR_GREEN) ✔ Done$(COLOR_RESET)"
 
 # --- Quality Assurance ---
@@ -105,4 +107,32 @@ test: ## Run tests with pytest
 test-coverage: ## Run tests with coverage report
 	@echo "$(COLOR_BLUE_BG)$(COLOR_BOLD) ➜ Running tests with coverage$(COLOR_RESET)"
 	@poetry run pytest --cov=refcheck --cov-report=term-missing
+	@echo "$(COLOR_GREEN) ✔ Done$(COLOR_RESET)"
+
+# --- Version Management ---
+
+.PHONY: bump-version
+bump-version: ## Preview what the next version would be
+	@echo "$(COLOR_BLUE_BG)$(COLOR_BOLD) ➜ Previewing version bump $(COLOR_RESET)"
+	@poetry run cz bump --dry-run
+	@echo "$(COLOR_GREEN) ✔ Done$(COLOR_RESET)"
+
+.PHONY: changelog
+changelog: ## Show unreleased changelog entries
+	@echo "$(COLOR_BLUE_BG)$(COLOR_BOLD) ➜ Generating changelog preview $(COLOR_RESET)"
+	@poetry run cz changelog --dry-run --unreleased-version "Unreleased"
+	@echo "$(COLOR_GREEN) ✔ Done$(COLOR_RESET)"
+
+.PHONY: check-version
+check-version: ## Display current and next version
+	@echo "$(COLOR_BLUE_BG)$(COLOR_BOLD) ➜ Version Information $(COLOR_RESET)"
+	@echo "Current version: $$(grep 'version = "' pyproject.toml | head -1 | sed 's/.*version = \"\(.*\)\"/\1/')"
+	@echo "Next version (preview):"
+	@poetry run cz bump --dry-run 2>&1 | grep -E "(bump|tag to create)" || echo "  No version bump detected"
+	@echo "$(COLOR_GREEN) ✔ Done$(COLOR_RESET)"
+
+.PHONY: update-hooks
+update-hooks: ## Update pre-commit hooks to latest versions
+	@echo "$(COLOR_BLUE_BG)$(COLOR_BOLD) ➜ Updating pre-commit hooks $(COLOR_RESET)"
+	@poetry run pre-commit autoupdate
 	@echo "$(COLOR_GREEN) ✔ Done$(COLOR_RESET)"
