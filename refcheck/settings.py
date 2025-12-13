@@ -1,8 +1,7 @@
-from refcheck.parsers import get_command_line_arguments
+from refcheck.cli import get_command_line_arguments
 
 
 class Settings:
-
     def __init__(self):
         args = get_command_line_arguments()
 
