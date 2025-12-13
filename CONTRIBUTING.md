@@ -220,10 +220,10 @@ make update-hooks      # Update pre-commit hooks to latest versions
 ### Running Tests
 
 ```bash
-# Run all tests
+# Run all tests with coverage
 make test
 
-# Run tests with coverage report
+# Run tests with detailed HTML coverage report
 make test-coverage
 
 # Run specific test file
@@ -233,13 +233,24 @@ poetry run pytest tests/test_validators/test_file_exists.py
 poetry run pytest -k "test_header"
 ```
 
+### Coverage Requirements
+
+**All pull requests must maintain at least 80% code coverage.** This is enforced by CI/CD pipelines.
+
+- Coverage is measured automatically during test runs
+- The build will fail if coverage drops below 80%
+- View detailed coverage reports in `htmlcov/index.html` after running `make test-coverage`
+- Codecov integration provides coverage diff reports on pull requests
+
 ### Writing Tests
 
-- Add tests for all new functionality
+- **Add tests for all new functionality** - No new code without tests
 - Place tests in the appropriate directory under `tests/`
 - Use descriptive test names that explain what is being tested
-- Aim for high code coverage (>90%)
+- **Aim for 90%+ coverage** for new modules (minimum 80% overall)
 - Include edge cases and error conditions
+- Use fixtures from `tests/conftest.py` for common test setup
+- Leverage test fixtures in `tests/fixtures/` for realistic test scenarios
 
 ### Test Structure
 

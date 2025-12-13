@@ -19,8 +19,9 @@ options:
 
 [![Downloads](https://static.pepy.tech/badge/refcheck)](https://pepy.tech/project/refcheck)
 [![CI/CD](https://github.com/flumi3/refcheck/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/flumi3/refcheck/actions/workflows/ci-cd.yml)
-[![codecov](https://codecov.io/gh/flumi3/refcheck/graph/badge.svg)](https://codecov.io/gh/flumi3/refcheck)
+[![codecov](https://codecov.io/gh/flumi3/refcheck/graph/badge.svg?token=YOUR_TOKEN)](https://codecov.io/gh/flumi3/refcheck)
 ![Python](https://img.shields.io/badge/python-3.10+-blue.svg)
+![Coverage](https://img.shields.io/badge/coverage-80%25-green.svg)
 
 ## Features
 
