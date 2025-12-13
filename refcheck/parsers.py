@@ -14,11 +14,17 @@ BASIC_IMAGE_PATTERN = re.compile(r"!\[(?P<text>[^(){}\[\]]+)\]\((?P<link>[^(){}\
 # Inline Links - <http://example.com>
 INLINE_LINK_PATTERN = re.compile(r"<(?P<link>[^>]+)>")
 
-RAW_LINK_PATTERN = re.compile(r"(^| )(?:(https?://\S+))")  # all links that are surrounded by nothing or spaces
-HTML_LINK_PATTERN = re.compile(r"<a\s+(?:[^>]*?\s+)?href=([\"\'])(.*?)\1")  # <a href="http://example.com">
+RAW_LINK_PATTERN = re.compile(
+    r"(^| )(?:(https?://\S+))"
+)  # all links that are surrounded by nothing or spaces
+HTML_LINK_PATTERN = re.compile(
+    r"<a\s+(?:[^>]*?\s+)?href=([\"\'])(.*?)\1"
+)  # <a href="http://example.com">
 
 # Local File References - scripts, markdown files, and local images
-HTML_IMAGE_PATTERN = re.compile(r"<img\s+(?:[^>]*?\s+)?src=([\"\'])(.*?)\1")  # <img src="image.png">
+HTML_IMAGE_PATTERN = re.compile(
+    r"<img\s+(?:[^>]*?\s+)?src=([\"\'])(.*?)\1"
+)  # <img src="image.png">
 
 
 @dataclass
@@ -88,28 +94,34 @@ class MarkdownParser:
 
         # Get all references that look like this: [text](reference)
         logger.info("Extracting basic references ...")
-        basic_reference_matches = self._find_matches_with_line_numbers(BASIC_REFERENCE_PATTERN, content)
-        basic_reference_matches = [ref for ref in basic_reference_matches if not ref.match[0].startswith("!")]
+        basic_reference_matches = self._find_matches_with_line_numbers(
+            BASIC_REFERENCE_PATTERN, content
+        )
+        basic_reference_matches = [
+            ref for ref in basic_reference_matches if not ref.match[0].startswith("!")
+        ]
         logger.info(f"Found {len(basic_reference_matches)} basic reference matches:")
         for ref_match in basic_reference_matches:
             logger.info(ref_match.__repr__())
 
-        basic_reference_matches = self._drop_code_block_references(basic_reference_matches, code_blocks)
+        basic_reference_matches = self._drop_code_block_references(
+            basic_reference_matches, code_blocks
+        )
         logger.info("Processing reference matches...")
         basic_references = self._process_basic_references(file_path, basic_reference_matches)
 
         # Get all image references that look like this: ![text](reference)
         logger.info("Extracting basic images ...")
-        basic_images = self._find_matches_with_line_numbers(BASIC_IMAGE_PATTERN, content)
-        logger.info(f"Found {len(basic_images)} basic images.")
-        basic_images = self._drop_code_block_references(basic_images, code_blocks)
-        basic_images = self._process_basic_references(file_path, basic_images)
+        basic_image_matches = self._find_matches_with_line_numbers(BASIC_IMAGE_PATTERN, content)
+        logger.info(f"Found {len(basic_image_matches)} basic images.")
+        basic_image_matches = self._drop_code_block_references(basic_image_matches, code_blocks)
+        basic_images = self._process_basic_references(file_path, basic_image_matches)
 
         logger.info("Extracting inline links ...")
-        inline_links = self._find_matches_with_line_numbers(INLINE_LINK_PATTERN, content)
-        logger.info(f"Found {len(inline_links)} inline links.")
-        inline_links = self._drop_code_block_references(inline_links, code_blocks)
-        inline_links = self._process_basic_references(file_path, inline_links)
+        inline_link_matches = self._find_matches_with_line_numbers(INLINE_LINK_PATTERN, content)
+        logger.info(f"Found {len(inline_link_matches)} inline links.")
+        inline_link_matches = self._drop_code_block_references(inline_link_matches, code_blocks)
+        inline_links = self._process_basic_references(file_path, inline_link_matches)
 
         return {
             "basic_references": basic_references,
@@ -156,7 +168,9 @@ class MarkdownParser:
         )  # matches anything that looks like a `protocol:`
         return bool(protocol_pattern.match(link))
 
-    def _process_basic_references(self, file_path: str, matches: list[ReferenceMatch]) -> list[Reference]:
+    def _process_basic_references(
+        self, file_path: str, matches: list[ReferenceMatch]
+    ) -> list[Reference]:
         """Process basic references."""
         references: list[Reference] = []
         for match in matches:
@@ -171,7 +185,9 @@ class MarkdownParser:
             references.append(reference)
         return references
 
-    def _process_inline_links(self, file_path: str, matches: list[ReferenceMatch]) -> list[Reference]:
+    def _process_inline_links(
+        self, file_path: str, matches: list[ReferenceMatch]
+    ) -> list[Reference]:
         """Process inline links enclosed in angle brackets.
 
         Handles patterns like:
@@ -192,7 +208,9 @@ class MarkdownParser:
             references.append(reference)
         return references
 
-    def _find_matches_with_line_numbers(self, pattern: Pattern[str], text: str) -> list[ReferenceMatch]:
+    def _find_matches_with_line_numbers(
+        self, pattern: Pattern[str], text: str
+    ) -> list[ReferenceMatch]:
         """Find regex matches along with their line numbers."""
         matches_with_line_numbers = []
         for match in re.finditer(pattern, text):

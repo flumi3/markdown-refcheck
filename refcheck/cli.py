@@ -32,7 +32,9 @@ class CustomFormatter(argparse.HelpFormatter):
 def get_command_line_arguments() -> Namespace:
     """Setup command line argument parser."""
     parser = argparse.ArgumentParser(
-        prog="refcheck", usage="refcheck [OPTIONS] [PATH ...]", formatter_class=CustomFormatter
+        prog="refcheck",
+        usage="refcheck [OPTIONS] [PATH ...]",
+        formatter_class=CustomFormatter,
     )  # type: ignore
     parser.add_argument(
         "paths",
@@ -42,13 +44,26 @@ def get_command_line_arguments() -> Namespace:
         help="Markdown files or directories to check",
     )
     parser.add_argument(
-        "-e", "--exclude", metavar="", type=str, nargs="*", default=[], help="Files or directories to exclude"
+        "-e",
+        "--exclude",
+        metavar="",
+        type=str,
+        nargs="*",
+        default=[],
+        help="Files or directories to exclude",
     )  # type: ignore
-    parser.add_argument("-cm", "--check-remote", action="store_true", help="Check remote references (HTTP/HTTPS links)")  # type: ignore
+    parser.add_argument(
+        "-cm",
+        "--check-remote",
+        action="store_true",
+        help="Check remote references (HTTP/HTTPS links)",
+    )  # type: ignore
     parser.add_argument("-nc", "--no-color", action="store_true", help="Turn off colored output")  # type: ignore
     parser.add_argument("-v", "--verbose", action="store_true", help="Enable verbose output")  # type: ignore
     parser.add_argument(
-        "--allow-absolute", action="store_true", help="Allow absolute path references like [ref](/path/to/file.md)"
+        "--allow-absolute",
+        action="store_true",
+        help="Allow absolute path references like [ref](/path/to/file.md)",
     )  # type: ignore
 
     # Check if the user has provided any files or directories

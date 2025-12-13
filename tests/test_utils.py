@@ -8,7 +8,7 @@ from refcheck.utils import (
     print_red_background,
     print_red,
     print_green,
-    print_yellow
+    print_yellow,
 )
 
 
@@ -27,7 +27,11 @@ def test_get_markdown_files_from_dir():
         # ├── file1.md
         # └── file2.py
         mock_walk.return_value = [
-            (os.path.normpath("root"), ("subdir1", "subdir2"), ("file1.md", "file2.py")),
+            (
+                os.path.normpath("root"),
+                ("subdir1", "subdir2"),
+                ("file1.md", "file2.py"),
+            ),
             (os.path.normpath("root/subdir1"), (), ("file3.md",)),
             (os.path.normpath("root/subdir2"), (), ("file4.txt", "file5.md")),
         ]
@@ -43,7 +47,10 @@ def test_get_markdown_files_from_dir():
 
         # Test case 2: Exclude directory root/subdir1
         result = get_markdown_files_from_dir("root", exclude=["root/subdir1"])
-        expected = [os.path.normpath("root/file1.md"), os.path.normpath("root/subdir2/file5.md")]
+        expected = [
+            os.path.normpath("root/file1.md"),
+            os.path.normpath("root/subdir2/file5.md"),
+        ]
         assert result == expected
 
         # Test case 3: Exclude file root/subdir1/file3.md
@@ -90,13 +97,22 @@ def mock_os_path_normpath(path):
         (["file1.md", "file2.md"], [], ["file1.md", "file2.md"], []),
         (["file1.md", "dir"], [], ["file1.md", "dir_file.md"], []),
         (["file1.md", "excluded.md"], [], ["file1.md"], []),
-        (["file1.md", "invalid_path"], [], ["file1.md"], ["invalid_path is not a valid file or directory."]),
+        (
+            ["file1.md", "invalid_path"],
+            [],
+            ["file1.md"],
+            ["invalid_path is not a valid file or directory."],
+        ),
     ],
 )
-def test_get_markdown_files_from_args(paths, exclude, expected_files, expected_warnings, monkeypatch, capsys):
+def test_get_markdown_files_from_args(
+    paths, exclude, expected_files, expected_warnings, monkeypatch, capsys
+):
     # Apply mocks
     monkeypatch.setattr("refcheck.utils.load_exclusion_patterns", mock_load_exclusion_patterns)
-    monkeypatch.setattr("refcheck.utils.get_markdown_files_from_dir", mock_get_markdown_files_from_dir)
+    monkeypatch.setattr(
+        "refcheck.utils.get_markdown_files_from_dir", mock_get_markdown_files_from_dir
+    )
     monkeypatch.setattr(os.path, "isdir", mock_os_path_isdir)
     monkeypatch.setattr(os.path, "isfile", mock_os_path_isfile)
     monkeypatch.setattr(os.path, "normpath", mock_os_path_normpath)
@@ -115,63 +131,80 @@ def test_get_markdown_files_from_args(paths, exclude, expected_files, expected_w
 
 # === Test print functions ===
 
+
 @pytest.fixture
 def mock_settings_no_color_true():
-    with patch('refcheck.utils.settings') as mock_settings:
+    with patch("refcheck.utils.settings") as mock_settings:
         mock_settings.no_color = True
         yield mock_settings
 
+
 @pytest.fixture
 def mock_settings_no_color_false():
-    with patch('refcheck.utils.settings') as mock_settings:
+    with patch("refcheck.utils.settings") as mock_settings:
         mock_settings.no_color = False
         yield mock_settings
 
+
 # Green background
+
 
 def test_print_green_background_no_color(mock_settings_no_color_true):
     result = print_green_background("test")
     assert result == "test"
 
+
 def test_print_green_background_color(mock_settings_no_color_false):
     result = print_green_background("test")
     assert result == "\033[42mtest\033[0m"
 
+
 # Red background
+
 
 def test_print_red_background_no_color(mock_settings_no_color_true):
     result = print_red_background("test")
     assert result == "test"
 
+
 def test_print_red_background_color(mock_settings_no_color_false):
     result = print_red_background("test")
     assert result == "\033[41mtest\033[0m"
 
+
 # Red
+
 
 def test_print_red_no_color(mock_settings_no_color_true):
     result = print_red("test")
     assert result == "test"
 
+
 def test_print_red_color(mock_settings_no_color_false):
     result = print_red("test")
     assert result == "\033[31mtest\033[0m"
 
+
 # Green
+
 
 def test_print_green_no_color(mock_settings_no_color_true):
     result = print_green("test")
     assert result == "test"
 
+
 def test_print_green_color(mock_settings_no_color_false):
     result = print_green("test")
     assert result == "\033[32mtest\033[0m"
 
+
 # Yellow
+
 
 def test_print_yellow_no_color(mock_settings_no_color_true):
     result = print_yellow("test")
     assert result == "test"
+
 
 def test_print_yellow_color(mock_settings_no_color_false):
     result = print_yellow("test")

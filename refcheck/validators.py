@@ -34,7 +34,9 @@ def file_exists(origin_file_path: str, ref_file_path: str) -> bool:
     if ref_file_path.startswith("\\"):
         # This seems to be an absolute windows path (e.g. \file.md) but it's actually a relative path to the
         # file where the reference was made in. (I know, strange that this is valid...)
-        logger.info("Seemingly absolute reference path starts with backslash. Treating as relative path ...")
+        logger.info(
+            "Seemingly absolute reference path starts with backslash. Treating as relative path ..."
+        )
         relative_ref = ref_file_path[1:]  # Remove leading backslash
         logger.info(f"{ref_file_path} -> {relative_ref}")
         if os.path.exists(relative_ref):
@@ -51,7 +53,9 @@ def file_exists(origin_file_path: str, ref_file_path: str) -> bool:
         logger.warning("Reference is absolute.")
 
         if not settings.allow_absolute:
-            logger.warning("Absolute references are not allowed. Use the --allow-absolute flag to allow them.")
+            logger.warning(
+                "Absolute references are not allowed. Use the --allow-absolute flag to allow them."
+            )
             return False
 
         # First, test the file with the absolute path
@@ -70,7 +74,9 @@ def file_exists(origin_file_path: str, ref_file_path: str) -> bool:
             absolute_file_path = os.path.abspath(origin_file_path)
 
             # Check if the file exists relative to the file in which the reference was made in
-            logger.info("Checking if the path exists relative to the file in which the reference was made in ...")
+            logger.info(
+                "Checking if the path exists relative to the file in which the reference was made in ..."
+            )
             abs_ref_path = os.path.join(os.path.dirname(absolute_file_path), ref)
             logger.info(f"-> '{abs_ref_path}'.")
 
@@ -79,7 +85,9 @@ def file_exists(origin_file_path: str, ref_file_path: str) -> bool:
             else:
                 # Traverse up the directory tree and test the relative path for each directory until we either
                 # find the file, or cannot go up any further.
-                logger.info("File does not exists there. Moving up the directory tree to find the file ...")
+                logger.info(
+                    "File does not exists there. Moving up the directory tree to find the file ..."
+                )
 
                 starting_dir = os.path.dirname(absolute_file_path)
                 while True:
@@ -117,7 +125,9 @@ def _header_exists(file_path: str, header: str) -> bool:
         with open(file_path, "r", encoding="utf-8") as file:
             content = file.read()
             normalized_header = _normalize_header(header)
-            normalized_headers = [_normalize_header(h) for h in re.findall(r"^#{1,6}\s+(.*)", content, re.MULTILINE)]
+            normalized_headers = [
+                _normalize_header(h) for h in re.findall(r"^#{1,6}\s+(.*)", content, re.MULTILINE)
+            ]
             if normalized_header in normalized_headers:
                 return True
     except FileNotFoundError:
@@ -127,7 +137,11 @@ def _header_exists(file_path: str, header: str) -> bool:
 
 def _normalize_header(header: str) -> str:
     """Normalize header to match Markdown link format."""
-    return re.sub(r"[^a-zA-Z0-9 -]", "", header.strip().lower().replace("_", " ").replace(" ", "-"))
+    return re.sub(
+        r"[^a-zA-Z0-9 -]",
+        "",
+        header.strip().lower().replace("_", " ").replace(" ", "-"),
+    )
 
 
 def is_valid_markdown_reference(ref: Reference) -> bool:
@@ -154,7 +168,9 @@ def is_valid_markdown_reference(ref: Reference) -> bool:
         target_path = referenced_file
 
     # Check if the referenced file exists
-    if not ref.link.startswith("#"):  # Skip if the reference is a header in the same file because the file exists
+    if not ref.link.startswith(
+        "#"
+    ):  # Skip if the reference is a header in the same file because the file exists
         if not file_exists(ref.file_path, target_path):
             return False
         # Resolve the absolute path for header checking

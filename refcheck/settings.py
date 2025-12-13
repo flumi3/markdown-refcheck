@@ -7,21 +7,21 @@ class Settings:
     def __init__(self):
         # Only parse arguments if not running under pytest
         if "pytest" in sys.modules:
-            self._paths = []
-            self._verbose = False
-            self._check_remote = False
-            self._no_color = False
-            self._allow_absolute = False
-            self._exclude = []
+            self._paths: list[str] = []
+            self._verbose: bool = False
+            self._check_remote: bool = False
+            self._no_color: bool = False
+            self._allow_absolute: bool = False
+            self._exclude: list[str] = []
         else:
             args = get_command_line_arguments()
 
-            self._paths = args.paths
-            self._verbose = args.verbose
-            self._check_remote = args.check_remote
-            self._no_color = args.no_color
-            self._allow_absolute = args.allow_absolute
-            self._exclude = args.exclude
+            self._paths: list[str] = args.paths
+            self._verbose: bool = args.verbose
+            self._check_remote: bool = args.check_remote
+            self._no_color: bool = args.no_color
+            self._allow_absolute: bool = args.allow_absolute
+            self._exclude: list[str] = args.exclude
 
     def __str__(self) -> str:
         return f"Settings(paths={self.paths}, verbose={self.verbose}, check_remote={self.check_remote}, no_color={self.no_color}, allow_absolute={self.allow_absolute}, exclude={self.exclude})"
