@@ -11,9 +11,13 @@ requests = "^2.32.3"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.4"
+pytest-cov = "^6.0.0"
 commitizen = "^4.2.2"
 python-semantic-release = ">=9.20,<11.0"
 ruff = ">=0.9.7,<0.12.0"
+mypy = "^1.13.0"
+vulture = "^2.13"
+deptry = "^0.22.0"
 
 [tool.poetry.scripts]
 refcheck = "refcheck.main:main"
@@ -27,6 +31,29 @@ version_variables = [
     "README.md:rev:tf"
 ]
 tag_format = "v{version}"
+
+[tool.vulture]
+min_confidence = 80
+exclude = ["*/__pycache__/*"]
+ignore_names = [
+    "_format_action_invocation",
+    "RAW_LINK_PATTERN",
+    "HTML_LINK_PATTERN",
+    "HTML_IMAGE_PATTERN",
+    "_process_inline_links",
+    "print_green_background",
+    "print_red_background",
+    "is_valid_remote_reference"
+]
+
+[tool.deptry.per_rule_ignores]
+DEP002 = ["mypy", "vulture", "deptry"]
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
 
 [build-system]
 requires = ["poetry-core"]
