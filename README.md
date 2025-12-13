@@ -1,5 +1,10 @@
 # RefCheck
 
+[![PyPI Downloads](https://static.pepy.tech/personalized-badge/refcheck?period=total&units=INTERNATIONAL_SYSTEM&left_color=GREY&right_color=ORANGE&left_text=downloads)](https://pepy.tech/projects/refcheck)
+![Python](https://img.shields.io/badge/python-3.10+-blue.svg)
+[![License: MIT](https://img.shields.io/badge/License-MIT-silver.svg)](https://opensource.org/licenses/MIT)
+[![CI/CD](https://github.com/flumi3/markdown-refcheck/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/flumi3/markdown-refcheck/actions/workflows/ci-cd.yml)
+
 RefCheck is a simple tool for finding broken references and links in Markdown files.
 
 ```text
@@ -17,11 +22,7 @@ options:
   --allow-absolute      Allow absolute path references like [ref](/path/to/file.md)
 ```
 
-[![Downloads](https://static.pepy.tech/badge/refcheck)](https://pepy.tech/project/refcheck)
-[![CI/CD](https://github.com/flumi3/refcheck/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/flumi3/refcheck/actions/workflows/ci-cd.yml)
-[![codecov](https://codecov.io/gh/flumi3/refcheck/graph/badge.svg?token=YOUR_TOKEN)](https://codecov.io/gh/flumi3/refcheck)
-![Python](https://img.shields.io/badge/python-3.10+-blue.svg)
-![Coverage](https://img.shields.io/badge/coverage-80%25-green.svg)
+<!-- [![codecov](https://codecov.io/gh/flumi3/markdown-refcheck/graph/badge.svg?token=YOUR_TOKEN)](https://codecov.io/gh/flumi3/markdown-refcheck) -->
 
 ## Features
 
