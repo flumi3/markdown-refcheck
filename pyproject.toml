@@ -41,7 +41,6 @@ version_variables = [
     "docs/Examples.md:rev:tf",
     "docs/Integration-Guide.md:rev:tf",
     "CONTRIBUTING.md:rev:tf",
-    "ideas.md:rev:tf"
 ]
 tag_format = "v{version}"
 
