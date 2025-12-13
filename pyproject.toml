@@ -18,7 +18,7 @@ ruff = ">=0.9.7,<0.12.0"
 mypy = "^1.13.0"
 types-requests = "^2.32.0"
 vulture = "^2.13"
-deptry = "^0.22.0"
+deptry = ">=0.22,<0.25"
 pre-commit = "^4.0.0"
 
 [tool.poetry.scripts]
