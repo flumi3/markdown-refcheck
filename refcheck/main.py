@@ -41,9 +41,13 @@ class ReferenceChecker:
                     if response.status_code < 400:
                         status = print_green("OK")
                     else:
-                        logger.info(f"Status code: {response.status_code}, Reason: {response.reason}")
+                        logger.info(
+                            f"Status code: {response.status_code}, Reason: {response.reason}"
+                        )
                         status = print_red("BROKEN")
-                        self.broken_references.append(BrokenReference(**ref.__dict__, status=status))
+                        self.broken_references.append(
+                            BrokenReference(**ref.__dict__, status=status)
+                        )
                 except requests.exceptions.RequestException as e:
                     logger.error(f"Error: Could not reach remote reference '{ref.link}': {e}")
                     status = print_red("BROKEN")
@@ -54,13 +58,17 @@ class ReferenceChecker:
                         status = print_green("OK")
                     else:
                         status = print_red("BROKEN")
-                        self.broken_references.append(BrokenReference(**ref.__dict__, status=status))
+                        self.broken_references.append(
+                            BrokenReference(**ref.__dict__, status=status)
+                        )
                 else:
                     if file_exists(ref.file_path, ref.link):
                         status = print_green("OK")
                     else:
                         status = print_red("BROKEN")
-                        self.broken_references.append(BrokenReference(**ref.__dict__, status=status))
+                        self.broken_references.append(
+                            BrokenReference(**ref.__dict__, status=status)
+                        )
             print(f"{ref.file_path}:{ref.line_number}: {ref.syntax} - {status}")
 
     def print_summary(self):
@@ -69,7 +77,9 @@ class ReferenceChecker:
 
         if self.broken_references:
             print(print_red(f"[!] {len(self.broken_references)} broken references found:"))
-            self.broken_references = sorted(self.broken_references, key=lambda ref: (ref.file_path, ref.line_number))
+            self.broken_references = sorted(
+                self.broken_references, key=lambda ref: (ref.file_path, ref.line_number)
+            )
 
             for broken_ref in self.broken_references:
                 print(f"{broken_ref.file_path}:{broken_ref.line_number}: {broken_ref.syntax}")
@@ -92,7 +102,11 @@ def main() -> bool:
 
     check_remote: bool = settings.check_remote
     if not check_remote:
-        print(print_yellow("[!] WARNING: Skipping remote reference check. Enable with arg --check-remote."))
+        print(
+            print_yellow(
+                "[!] WARNING: Skipping remote reference check. Enable with arg --check-remote."
+            )
+        )
 
     # Retrieve all markdown files specified by the user
     markdown_files = get_markdown_files_from_args(settings.paths, settings.exclude)
