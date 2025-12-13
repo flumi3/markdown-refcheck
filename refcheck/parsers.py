@@ -6,13 +6,14 @@ from dataclasses import dataclass
 logger = logging.getLogger()
 
 CODE_BLOCK_PATTERN = re.compile(r"```(?P<content>[\s\S]*?)```")
+INLINE_CODE_PATTERN = re.compile(r"`(?P<content>[^`\n]+)`")
 
 # Basic Markdown references
 BASIC_REFERENCE_PATTERN = re.compile(r"!*\[(?P<text>[^\]]+)\]\((?P<link>[^)]+)\)")  # []() and ![]()
 BASIC_IMAGE_PATTERN = re.compile(r"!\[(?P<text>[^(){}\[\]]+)\]\((?P<link>[^(){}\[\]]+)\)")  # ![]()
 
 # Inline Links - <http://example.com>
-INLINE_LINK_PATTERN = re.compile(r"<(?P<link>[^>]+)>")
+INLINE_LINK_PATTERN = re.compile(r"<(?P<link>(?:https?://|mailto:|[a-zA-Z0-9._%+-]+@)[^>]+)>")
 
 RAW_LINK_PATTERN = re.compile(
     r"(^| )(?:(https?://\S+))"
@@ -92,6 +93,14 @@ class MarkdownParser:
         code_blocks = self._find_matches_with_line_numbers(CODE_BLOCK_PATTERN, content)
         logger.info(f"Found {len(code_blocks)} code blocks.")
 
+        # Get all inline code spans with backticks
+        logger.info("Extracting inline code ...")
+        inline_code = self._find_matches_with_line_numbers(INLINE_CODE_PATTERN, content)
+        logger.info(f"Found {len(inline_code)} inline code spans.")
+
+        # Combine code blocks and inline code for filtering
+        all_code = code_blocks + inline_code
+
         # Get all references that look like this: [text](reference)
         logger.info("Extracting basic references ...")
         basic_reference_matches = self._find_matches_with_line_numbers(
@@ -104,9 +113,7 @@ class MarkdownParser:
         for ref_match in basic_reference_matches:
             logger.info(ref_match.__repr__())
 
-        basic_reference_matches = self._drop_code_block_references(
-            basic_reference_matches, code_blocks
-        )
+        basic_reference_matches = self._drop_code_references(basic_reference_matches, all_code)
         logger.info("Processing reference matches...")
         basic_references = self._process_basic_references(file_path, basic_reference_matches)
 
@@ -114,13 +121,13 @@ class MarkdownParser:
         logger.info("Extracting basic images ...")
         basic_image_matches = self._find_matches_with_line_numbers(BASIC_IMAGE_PATTERN, content)
         logger.info(f"Found {len(basic_image_matches)} basic images.")
-        basic_image_matches = self._drop_code_block_references(basic_image_matches, code_blocks)
+        basic_image_matches = self._drop_code_references(basic_image_matches, all_code)
         basic_images = self._process_basic_references(file_path, basic_image_matches)
 
         logger.info("Extracting inline links ...")
         inline_link_matches = self._find_matches_with_line_numbers(INLINE_LINK_PATTERN, content)
         logger.info(f"Found {len(inline_link_matches)} inline links.")
-        inline_link_matches = self._drop_code_block_references(inline_link_matches, code_blocks)
+        inline_link_matches = self._drop_code_references(inline_link_matches, all_code)
         inline_links = self._process_basic_references(file_path, inline_link_matches)
 
         return {
@@ -129,35 +136,38 @@ class MarkdownParser:
             "inline_links": inline_links,
         }
 
-    def _drop_code_block_references(
-        self, references: list[ReferenceMatch], code_blocks: list[ReferenceMatch]
+    def _drop_code_references(
+        self, references: list[ReferenceMatch], code_sections: list[ReferenceMatch]
     ) -> list[ReferenceMatch]:
-        """Drop references that are part of code blocks."""
-        logger.info("Dropping references that are part of code blocks ...")
+        """Drop references that are part of code blocks or inline code."""
+        logger.info("Dropping references that are part of code blocks or inline code ...")
 
-        # Filter out references that are inside code blocks
+        # Filter out references that are inside code blocks or inline code
         filtered_references = []
         dropped_counter = 0
 
         for ref in references:
-            is_in_code_block = False
-            for code_block in code_blocks:
+            is_in_code = False
+            for code_section in code_sections:
                 logger.debug(ref.match.group(0))
-                logger.debug(code_block.match.group(1))
 
-                if ref.match.group(0) in code_block.match.group(1):
-                    logger.info(f"Dropping reference: {ref.match.group(0)}")
-                    is_in_code_block = True
-                    dropped_counter += 1
-                    break
+                # Check if reference is within the code section content
+                if code_section.match.lastindex and code_section.match.lastindex >= 1:
+                    content = code_section.match.group(1)
+                    logger.debug(f"Code content: {content}")
+                    if ref.match.group(0) in content:
+                        logger.info(f"Dropping reference: {ref.match.group(0)}")
+                        is_in_code = True
+                        dropped_counter += 1
+                        break
 
-            if not is_in_code_block:
+            if not is_in_code:
                 filtered_references.append(ref)
 
         if dropped_counter > 0:
             logger.info(f"Dropped {dropped_counter} references.")
         else:
-            logger.info("No code block references found.")
+            logger.info("No code references found.")
 
         return filtered_references
 

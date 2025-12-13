@@ -32,7 +32,7 @@ class ReferenceChecker:
             logger.info(ref)
 
             if ref.is_remote and not settings.check_remote:
-                logger.warning("Skipping remote reference check.")
+                logger.info("Skipping remote reference check.")
                 status = print_yellow("SKIPPED")
             elif ref.is_remote and settings.check_remote:
                 # Check if remote reference is reachable
