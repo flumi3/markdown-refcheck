@@ -43,6 +43,9 @@ RefCheck is available on PyPI:
 
 ```bash
 pip install refcheck
+
+# or using pipx
+pipx install refcheck
 ```
 
 ## Examples

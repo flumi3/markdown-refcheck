@@ -4,6 +4,8 @@ version = "0.4.1"
 description = "Tool for finding broken references and links in Markdown files."
 authors = ["Sebastian Flum <sebastian.flum.dev@gmail.com>"]
 readme = "README.md"
+repository = "https://github.com/flumi3/markdown-refcheck"
+keywords = ["markdown", "links", "references", "validator", "cli"]
 
 [tool.poetry.dependencies]
 python = "^3.10"
