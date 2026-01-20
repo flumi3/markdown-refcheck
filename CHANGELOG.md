@@ -1,12 +1,70 @@
 # CHANGELOG
 
 
+## v0.4.2 (2026-01-20)
+
+### Bug Fixes
+
+- Correct status code handling
+  ([`6471dbe`](https://github.com/flumi3/markdown-refcheck/commit/6471dbef2513f2965e9615af05e51094fafcc9b4))
+
+This supplements the previous 'fix status codes' commit with proper semantic versioning format.
+
+### Chores
+
+- **deps**: Bump filelock in the pip group across 1 directory
+  ([`818abab`](https://github.com/flumi3/markdown-refcheck/commit/818ababf557795f8c3e7a2ce5f6e1affdc8aabcb))
+
+Bumps the pip group with 1 update in the / directory:
+  [filelock](https://github.com/tox-dev/py-filelock).
+
+Updates `filelock` from 3.20.0 to 3.20.1 - [Release
+  notes](https://github.com/tox-dev/py-filelock/releases) -
+  [Changelog](https://github.com/tox-dev/filelock/blob/main/docs/changelog.rst) -
+  [Commits](https://github.com/tox-dev/py-filelock/compare/3.20.0...3.20.1)
+
+--- updated-dependencies: - dependency-name: filelock dependency-version: 3.20.1
+
+dependency-type: indirect
+
+dependency-group: pip ...
+
+Signed-off-by: dependabot[bot] <support@github.com>
+
+- **deps**: Bump urllib3 in the pip group across 1 directory
+  ([`2dd5ab6`](https://github.com/flumi3/markdown-refcheck/commit/2dd5ab69c3cc7777e66f8cd0d614367574682487))
+
+Bumps the pip group with 1 update in the / directory: [urllib3](https://github.com/urllib3/urllib3).
+
+Updates `urllib3` from 2.6.0 to 2.6.3 - [Release notes](https://github.com/urllib3/urllib3/releases)
+  - [Changelog](https://github.com/urllib3/urllib3/blob/main/CHANGES.rst) -
+  [Commits](https://github.com/urllib3/urllib3/compare/2.6.0...2.6.3)
+
+--- updated-dependencies: - dependency-name: urllib3 dependency-version: 2.6.3
+
+dependency-type: indirect
+
+dependency-group: pip ...
+
+Signed-off-by: dependabot[bot] <support@github.com>
+
+### Documentation
+
+- Add pipx installation instructions and update repository metadata in pyproject.toml
+  ([`447a75f`](https://github.com/flumi3/markdown-refcheck/commit/447a75fc98c8d9bfee387f4372ffd106d76a7b43))
+
+
 ## v0.4.1 (2025-12-13)
 
 ### Bug Fixes
 
 - Remove outdated reference to ideas.md in version_variables
   ([`04c4f46`](https://github.com/flumi3/markdown-refcheck/commit/04c4f46d0f33a605f799d3d8c6bf67fa62a633fc))
+
+### Documentation
+
+- Update badge links and remove outdated coverage badge in README.md
+  ([`ca6d611`](https://github.com/flumi3/markdown-refcheck/commit/ca6d611fda0e6cf82047e2bd8e49456c7093860d))
 
 
 ## v0.4.0 (2025-12-13)
