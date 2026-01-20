@@ -293,9 +293,10 @@ class TestMainFunction:
             mock_settings.is_valid.return_value = True
 
             with mock.patch("refcheck.main.get_markdown_files_from_args", return_value=[]):
-                result = main()
+                with pytest.raises(SystemExit) as exc_info:
+                    main()
 
-        assert result is False
+        assert exc_info.value.code == 1
         captured = capsys.readouterr()
         assert "No Markdown files specified or found" in captured.out
 
@@ -323,9 +324,10 @@ class TestMainFunction:
             mock_settings.is_valid.return_value = True
 
             with mock.patch("refcheck.main.get_markdown_files_from_args", return_value=[test_file]):
-                result = main()
+                with pytest.raises(SystemExit) as exc_info:
+                    main()
 
-        assert result is True
+        assert exc_info.value.code == 0
         captured = capsys.readouterr()
         assert "No broken references!" in captured.out
 
@@ -348,9 +350,10 @@ class TestMainFunction:
             with mock.patch(
                 "refcheck.main.get_markdown_files_from_args", return_value=[source_file]
             ):
-                result = main()
+                with pytest.raises(SystemExit) as exc_info:
+                    main()
 
-        assert result is True
+        assert exc_info.value.code == 0
         captured = capsys.readouterr()
         assert "No broken references!" in captured.out
 
@@ -368,9 +371,10 @@ class TestMainFunction:
             mock_settings.is_valid.return_value = True
 
             with mock.patch("refcheck.main.get_markdown_files_from_args", return_value=[test_file]):
-                result = main()
+                with pytest.raises(SystemExit) as exc_info:
+                    main()
 
-        assert result is False
+        assert exc_info.value.code == 1
         captured = capsys.readouterr()
         assert "1 broken references found" in captured.out
         assert "nonexistent.md" in captured.out
@@ -389,8 +393,10 @@ class TestMainFunction:
             mock_settings.is_valid.return_value = True
 
             with mock.patch("refcheck.main.get_markdown_files_from_args", return_value=[test_file]):
-                main()
+                with pytest.raises(SystemExit) as exc_info:
+                    main()
 
+        assert exc_info.value.code == 0
         captured = capsys.readouterr()
         assert "Skipping remote reference check" in captured.out
 
@@ -409,8 +415,10 @@ class TestMainFunction:
 
             with mock.patch("refcheck.main.get_markdown_files_from_args", return_value=[test_file]):
                 with mock.patch("refcheck.main.setup_logging") as mock_setup_logging:
-                    main()
+                    with pytest.raises(SystemExit) as exc_info:
+                        main()
 
+            assert exc_info.value.code == 0
             mock_setup_logging.assert_called_once_with(verbose=True)
 
     def test_main_multiple_files(self, temp_markdown_file, capsys):
@@ -429,9 +437,10 @@ class TestMainFunction:
             with mock.patch(
                 "refcheck.main.get_markdown_files_from_args", return_value=[file1, file2]
             ):
-                result = main()
+                with pytest.raises(SystemExit) as exc_info:
+                    main()
 
-        assert result is True
+        assert exc_info.value.code == 0
         captured = capsys.readouterr()
         assert "2 Markdown files to check" in captured.out
 
