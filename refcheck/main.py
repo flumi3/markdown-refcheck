@@ -92,7 +92,7 @@ class ReferenceChecker:
         print("====================================================================")
 
 
-def main() -> bool:
+def main() -> None:
     # Check if settings configuration is valid
     if not settings.is_valid():
         sys.exit(1)
@@ -112,7 +112,7 @@ def main() -> bool:
     markdown_files = get_markdown_files_from_args(settings.paths, settings.exclude)
     if not markdown_files:
         print(print_red("[!] No Markdown files specified or found."))
-        return False
+        sys.exit(1)
 
     print(f"\n[+] {len(markdown_files)} Markdown files to check.")
     for file in markdown_files:
@@ -141,11 +141,11 @@ def main() -> bool:
             print("No references found.")
 
     checker.print_summary()
-    return not bool(checker.broken_references)
+    if checker.broken_references:
+        sys.exit(1)  # Exit with failure if broken references found
+    else:
+        sys.exit(0)  # Exit with success if no broken references
 
 
 if __name__ == "__main__":
-    if main():
-        sys.exit(0)
-    else:
-        sys.exit(1)
+    main()
