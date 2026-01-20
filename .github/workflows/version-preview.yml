@@ -21,8 +21,8 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install commitizen
-        run: pip install commitizen
+      - name: Install python-semantic-release
+        run: pip install python-semantic-release
 
       - name: Get current version
         id: current
@@ -33,18 +33,35 @@ jobs:
       - name: Preview next version
         id: preview
         run: |
-          # Get the bump type and next version
-          RESULT=$(cz bump --dry-run 2>&1) || true
-          echo "Commitizen output:"
-          echo "$RESULT"
+          # Get the next version using semantic-release
+          semantic-release version --print > version_output.txt 2>&1 || true
+          cat version_output.txt
 
-          # Extract next version if a bump would occur
-          if echo "$RESULT" | grep -q "tag to create:"; then
-            NEXT=$(echo "$RESULT" | grep "tag to create:" | sed 's/.*tag to create: v//')
-            BUMP_TYPE=$(echo "$RESULT" | grep "bump:" | sed 's/.*bump: //' || echo "patch")
+          # Check if a new version would be released
+          if grep -q "The next version is:" version_output.txt; then
+            NEXT=$(grep "The next version is:" version_output.txt | sed 's/.*The next version is: //')
             echo "next_version=$NEXT" >> $GITHUB_OUTPUT
-            echo "bump_type=$BUMP_TYPE" >> $GITHUB_OUTPUT
             echo "will_bump=true" >> $GITHUB_OUTPUT
+            
+            # Determine bump type by comparing versions
+            CURRENT="${{ steps.current.outputs.version }}"
+            CURRENT_MAJOR=$(echo $CURRENT | cut -d. -f1)
+            CURRENT_MINOR=$(echo $CURRENT | cut -d. -f2)
+            CURRENT_PATCH=$(echo $CURRENT | cut -d. -f3)
+            
+            NEXT_MAJOR=$(echo $NEXT | cut -d. -f1)
+            NEXT_MINOR=$(echo $NEXT | cut -d. -f2)
+            NEXT_PATCH=$(echo $NEXT | cut -d. -f3)
+            
+            if [ "$NEXT_MAJOR" -gt "$CURRENT_MAJOR" ]; then
+              BUMP_TYPE="major"
+            elif [ "$NEXT_MINOR" -gt "$CURRENT_MINOR" ]; then
+              BUMP_TYPE="minor"
+            else
+              BUMP_TYPE="patch"
+            fi
+            
+            echo "bump_type=$BUMP_TYPE" >> $GITHUB_OUTPUT
           else
             echo "will_bump=false" >> $GITHUB_OUTPUT
           fi
