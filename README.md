@@ -1,11 +1,12 @@
-# RefCheck
+# Markdown RefCheck
 
 [![PyPI Downloads](https://static.pepy.tech/personalized-badge/refcheck?period=total&units=INTERNATIONAL_SYSTEM&left_color=GREY&right_color=ORANGE&left_text=downloads)](https://pepy.tech/projects/refcheck)
 ![Python](https://img.shields.io/badge/python-3.10+-blue.svg)
 [![License: MIT](https://img.shields.io/badge/License-MIT-silver.svg)](https://opensource.org/licenses/MIT)
 [![CI/CD](https://github.com/flumi3/markdown-refcheck/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/flumi3/markdown-refcheck/actions/workflows/ci-cd.yml)
 
-RefCheck is a simple tool for finding broken references and links in Markdown files.
+Markdown RefCheck is a simple tool that checks Markdown references to find any broken links.  
+It helps keeping your documentation free from broken section refs, missing images and files, and unavailable websites links.
 
 ```text
 usage: refcheck [OPTIONS] [PATH ...]
@@ -26,15 +27,12 @@ options:
 
 ## Features
 
-- 🔍 **Comprehensive Reference Detection** - Find and validate various reference patterns in Markdown files
+- 🔍 **Reference Detection** - Find and validate various reference patterns in Markdown files
 - ❌ **Broken Link Highlighting** - Quickly identify broken references with clear error messages
-- 📁 **File Path Validation** - Support for both absolute and relative file paths to any file type
 - 🌐 **Remote URL Checking** - Validate external HTTP/HTTPS links (optional with `--check-remote`)
-- 🎯 **Header Reference Validation** - Verify links to specific sections within Markdown files
 - 🛠️ **User-Friendly CLI** - Simple and intuitive command-line interface
-- ⚙️ **CI/CD Ready** - Perfect for automated quality checks in your documentation workflows
 - 🎨 **Colored Output** - Clear, color-coded results for easy scanning (disable with `--no-color`)
-- 📊 **Detailed Reporting** - Summary statistics and line-by-line reference validation
+- ⚙️ **CI/CD Ready** - Perfect for automated quality checks in your documentation workflows
 - 🚀 **Pre-commit Integration** - Available as a pre-commit hook for automated validation
 
 ## Installation
@@ -46,6 +44,18 @@ pip install refcheck
 
 # or using pipx
 pipx install refcheck
+```
+
+## Pre-commit Integration
+
+Add this to your `pre-commit-config.yml`:
+
+```yaml
+- repo: https://github.com/flumi3/refcheck
+  rev: v0.4.2
+  hooks:
+    - id: refcheck
+      args: ["docs/", "--exclude", "docs/filetoexclude.md"]
 ```
 
 ## Examples
@@ -93,31 +103,12 @@ tests\sample_markdown.md:52: https://www.openai.com/logo.png
 ====================================================================
 ```
 
-## Pre-commit Hook
-
-RefCheck is also available as pre-commit hook!
-
-```yaml
-- repo: https://github.com/flumi3/refcheck
-  rev: v0.4.2
-  hooks:
-    - id: refcheck
-      args: ["docs/", "-e", "docs/filetoexclude.md"] # e.g. scan the docs/ folder and exclude a file
-```
-
 For more advanced configuration options, see the [Integration Guide](docs/Integration-Guide.md).
 
 ## Contributing
 
-Contributions are welcome!
-
-Please see [CONTRIBUTING.md](CONTRIBUTING.md) for:
-
-- Development setup instructions
-- Commit message conventions
-- Code quality standards
-- Testing requirements
-- Pull request guidelines
+Contributions are welcome!  
+Please see [CONTRIBUTING.md](CONTRIBUTING.md) before opening pull requests.
 
 ## Documentation
 
@@ -126,7 +117,3 @@ For more detailed information, check out the documentation:
 - [CLI Reference](docs/CLI-Reference.md) - Complete command-line options and usage
 - [Integration Guide](docs/Integration-Guide.md) - CI/CD and workflow integration
 - [Examples](docs/Examples.md) - Real-world usage examples
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
