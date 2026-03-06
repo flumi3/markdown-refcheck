@@ -8,21 +8,21 @@ logger = logging.getLogger()
 IGNORE_FILE = ".refcheckignore"
 
 CHECK_IGNORE_DEFAULTS = [
-    ".git",
-    ".vscode",
-    ".idea",
-    "__pycache__",
-    "node_modules",
-    "venv",
-    ".venv",
-    ".pytest_cache",
+    ".git/",
+    ".vscode/",
+    ".idea/",
+    "__pycache__/",
+    "node_modules/",
+    "venv/",
+    ".venv/",
+    ".pytest_cache/",
 ]
 
 
 def load_exclusion_patterns() -> list[str]:
     """Read exclusions from the .refcheckignore file."""
     if not os.path.isfile(IGNORE_FILE):
-        logger.warning(f"Could not find {IGNORE_FILE}. Using default exclusions.")
+        logger.info(f"Could not find {IGNORE_FILE}. Using default exclusions.")
         exclusions = CHECK_IGNORE_DEFAULTS
     else:
         logger.info(f"Reading exclusions from {IGNORE_FILE}...")
@@ -31,6 +31,21 @@ def load_exclusion_patterns() -> list[str]:
 
     print(print_yellow(f"[!] WARNING: Skipping these files and directories: {exclusions}"))
     return exclusions
+
+
+def _is_path_excluded(path: str, exclude_set: set[str]) -> bool:
+    """Check if a path should be excluded based on the exclude set.
+
+    Handles both bare names (e.g. 'node_modules') that may appear anywhere in the
+    path tree, and explicit relative/absolute paths (e.g. '../some/dir').
+    """
+    for ex in exclude_set:
+        if path == ex or path.startswith(ex + os.sep):
+            return True
+        # Bare name with no separator: match against individual path components
+        if os.sep not in ex and ex in path.split(os.sep):
+            return True
+    return False
 
 
 def get_markdown_files_from_dir(root_dir: str, exclude: list[str] | None = None) -> list[str]:
@@ -44,7 +59,7 @@ def get_markdown_files_from_dir(root_dir: str, exclude: list[str] | None = None)
     # Walk through the directory to get all markdown files
     for subdir, _, files in os.walk(root_dir):
         subdir_norm = os.path.normpath(subdir)
-        if any(subdir_norm.startswith(exclude_item) for exclude_item in exclude_set):
+        if _is_path_excluded(subdir_norm, exclude_set):
             continue  # Skip excluded directories
 
         for file in files:
@@ -76,7 +91,7 @@ def get_markdown_files_from_args(paths: list[str], exclude: list[str] | None = N
             if norm_path.endswith(".md"):
                 markdown_files.add(norm_path)
         else:
-            print(f"[!] Warning: {path} is not a valid file or directory.")
+            print(print_yellow(f"[!] Warning: {path} is not a valid file or directory."))
 
     return list(markdown_files)
 
