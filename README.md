@@ -52,7 +52,7 @@ Add this to your `pre-commit-config.yml`:
 
 ```yaml
 - repo: https://github.com/flumi3/refcheck
-  rev: v0.4.2
+  rev: v0.4.3
   hooks:
     - id: refcheck
       args: ["docs/", "--exclude", "docs/filetoexclude.md"]

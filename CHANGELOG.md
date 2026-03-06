@@ -1,6 +1,59 @@
 # CHANGELOG
 
 
+## v0.4.3 (2026-03-06)
+
+### Bug Fixes
+
+- Update exclusion patterns and improve path exclusion logic
+  ([#100](https://github.com/flumi3/markdown-refcheck/pull/100),
+  [`2ecc2b9`](https://github.com/flumi3/markdown-refcheck/commit/2ecc2b9b77b763f3483f0be49755784171a2f8ef))
+
+### Chores
+
+- **deps**: Bump virtualenv in the pip group across 1 directory
+  ([`5709637`](https://github.com/flumi3/markdown-refcheck/commit/5709637b15fe6be2d3f4ddbb13f27c521d35579c))
+
+Bumps the pip group with 1 update in the / directory:
+  [virtualenv](https://github.com/pypa/virtualenv).
+
+Updates `virtualenv` from 20.33.1 to 20.36.1 - [Release
+  notes](https://github.com/pypa/virtualenv/releases) -
+  [Changelog](https://github.com/pypa/virtualenv/blob/main/docs/changelog.rst) -
+  [Commits](https://github.com/pypa/virtualenv/compare/20.33.1...20.36.1)
+
+--- updated-dependencies: - dependency-name: virtualenv dependency-version: 20.36.1
+
+dependency-type: indirect
+
+dependency-group: pip ...
+
+Signed-off-by: dependabot[bot] <support@github.com>
+
+### Continuous Integration
+
+- Add validate-pr-title trigger to run on PR title change
+  ([`a48e9a7`](https://github.com/flumi3/markdown-refcheck/commit/a48e9a773d501fbb66c4091066d8ab25d8581353))
+
+- Improve PR title validation and commit message checks
+  ([`b804e38`](https://github.com/flumi3/markdown-refcheck/commit/b804e383d5bf4782cc6d9bd3fdfb037c3c5fc226))
+
+- remove dependency of lint/test on pr commitizen checks - split up commitizen check into two
+  separate jobs: 1) validate-pr-title and 2) validate-commit-messages - get pr title dynamically to
+  enable re-run of failed jobs
+
+- Replace commitizen with python semantic release to fix version preview
+  ([`0aa7d82`](https://github.com/flumi3/markdown-refcheck/commit/0aa7d82e3e078688b4ce73e2edfb7269ad42653c))
+
+- the version preview workflow was using commitizen, but the actual CI/CD workflow is using python
+  semantic release
+
+### Documentation
+
+- Improve README
+  ([`6f93bf6`](https://github.com/flumi3/markdown-refcheck/commit/6f93bf60f76cd6fd8e0819fe7bc835a4459c6dc8))
+
+
 ## v0.4.2 (2026-01-20)
 
 ### Bug Fixes
