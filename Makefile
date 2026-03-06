@@ -40,7 +40,7 @@ help: ## Display this help message
 .PHONY: init
 init: ## Initialize the development environment for all modules
 	@echo "$(COLOR_BLUE_BG)$(COLOR_BOLD) ➜ Initializing Core Environment $(COLOR_RESET)"
-	@poetry install
+	@poetry sync
 	@echo "$(COLOR_BLUE_BG)$(COLOR_BOLD) ➜ Installing pre-commit hooks $(COLOR_RESET)"
 	@poetry run pre-commit install --hook-type commit-msg --hook-type pre-push
 	@echo "$(COLOR_GREEN) ✔ Done$(COLOR_RESET)"
