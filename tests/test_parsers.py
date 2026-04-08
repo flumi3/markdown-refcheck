@@ -419,6 +419,23 @@ line 3
         assert len(inline_links) == 1
         assert inline_links[0].link == "https://real.com"
 
+    def test_parse_markdown_file_duplicate_reference_inside_and_outside_comment(
+        self, temp_markdown_file
+    ):
+        """Test that a reference appearing both inside a comment and outside is still found."""
+        content = """# Test
+<!-- [dup](same.md) -->
+[dup](same.md)
+"""
+        file_path = temp_markdown_file(content)
+        parser = MarkdownParser()
+        result = parser.parse_markdown_file(file_path)
+
+        basic_refs = result["basic_references"]
+        assert len(basic_refs) == 1
+        assert basic_refs[0].link == "same.md"
+        assert basic_refs[0].line_number == 3
+
 
 class TestReferenceDataClass:
     """Tests for Reference data class."""
