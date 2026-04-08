@@ -351,6 +351,74 @@ line 3
         assert len(basic_images) == 1
         assert basic_images[0].link == "image.png"
 
+    def test_parse_markdown_file_html_comment_filtering(self, temp_markdown_file):
+        """Test that references inside HTML comments are ignored."""
+        content = """# Test
+[real link](real.md)
+<!-- [commented link](commented.md) -->
+[another real](real2.md)
+"""
+        file_path = temp_markdown_file(content)
+        parser = MarkdownParser()
+        result = parser.parse_markdown_file(file_path)
+
+        basic_refs = result["basic_references"]
+        assert len(basic_refs) == 2
+        real_links = [ref.link for ref in basic_refs]
+        assert "real.md" in real_links
+        assert "real2.md" in real_links
+        assert "commented.md" not in real_links
+
+    def test_parse_markdown_file_multiline_html_comment_filtering(self, temp_markdown_file):
+        """Test that references inside multi-line HTML comments are ignored."""
+        content = """# Test
+[real link](real.md)
+<!--
+[commented link 1](commented1.md)
+[commented link 2](commented2.md)
+-->
+[another real](real2.md)
+"""
+        file_path = temp_markdown_file(content)
+        parser = MarkdownParser()
+        result = parser.parse_markdown_file(file_path)
+
+        basic_refs = result["basic_references"]
+        assert len(basic_refs) == 2
+        real_links = [ref.link for ref in basic_refs]
+        assert "real.md" in real_links
+        assert "real2.md" in real_links
+        assert "commented1.md" not in real_links
+        assert "commented2.md" not in real_links
+
+    def test_parse_markdown_file_html_comment_image_filtering(self, temp_markdown_file):
+        """Test that image references inside HTML comments are ignored."""
+        content = """# Test
+![real image](real.png)
+<!-- ![commented image](commented.png) -->
+"""
+        file_path = temp_markdown_file(content)
+        parser = MarkdownParser()
+        result = parser.parse_markdown_file(file_path)
+
+        basic_images = result["basic_images"]
+        assert len(basic_images) == 1
+        assert basic_images[0].link == "real.png"
+
+    def test_parse_markdown_file_html_comment_inline_link_filtering(self, temp_markdown_file):
+        """Test that inline links inside HTML comments are ignored."""
+        content = """# Test
+<https://real.com>
+<!-- <https://commented.com> -->
+"""
+        file_path = temp_markdown_file(content)
+        parser = MarkdownParser()
+        result = parser.parse_markdown_file(file_path)
+
+        inline_links = result["inline_links"]
+        assert len(inline_links) == 1
+        assert inline_links[0].link == "https://real.com"
+
 
 class TestReferenceDataClass:
     """Tests for Reference data class."""

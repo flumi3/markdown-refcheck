@@ -7,6 +7,7 @@ logger = logging.getLogger()
 
 CODE_BLOCK_PATTERN = re.compile(r"```(?P<content>[\s\S]*?)```")
 INLINE_CODE_PATTERN = re.compile(r"`(?P<content>[^`\n]+)`")
+HTML_COMMENT_PATTERN = re.compile(r"<!--(?P<content>[\s\S]*?)-->")
 
 # Basic Markdown references
 BASIC_REFERENCE_PATTERN = re.compile(r"!*\[(?P<text>[^\]]+)\]\((?P<link>[^)]+)\)")  # []() and ![]()
@@ -98,8 +99,13 @@ class MarkdownParser:
         inline_code = self._find_matches_with_line_numbers(INLINE_CODE_PATTERN, content)
         logger.info(f"Found {len(inline_code)} inline code spans.")
 
-        # Combine code blocks and inline code for filtering
-        all_code = code_blocks + inline_code
+        # Get all HTML comments, such as <!-- ... -->
+        logger.info("Extracting HTML comments ...")
+        html_comments = self._find_matches_with_line_numbers(HTML_COMMENT_PATTERN, content)
+        logger.info(f"Found {len(html_comments)} HTML comments.")
+
+        # Combine code blocks, inline code, and HTML comments for filtering
+        all_code = code_blocks + inline_code + html_comments
 
         # Get all references that look like this: [text](reference)
         logger.info("Extracting basic references ...")
