@@ -1,6 +1,70 @@
 # CHANGELOG
 
 
+## v0.4.4 (2026-04-09)
+
+### Bug Fixes
+
+- Ignore references inside HTML comments (#28)
+  ([#104](https://github.com/flumi3/markdown-refcheck/pull/104),
+  [`39d236b`](https://github.com/flumi3/markdown-refcheck/commit/39d236bec7ba3dbd2a4b4667a9c92f7468e43275))
+
+* fix(parsers): ignore references inside HTML comments
+
+* fix(parsers): use position-based filtering in _drop_code_references
+
+Replace substring membership check with span comparison to prevent incorrectly dropping references
+  that share the same text as a commented-out or code-block reference at a different position.
+
+* chore: make test case a bit more real
+
+* ci(version-preview): pin python-semantic-release to v7
+
+### Chores
+
+- **deps**: Bump filelock in the pip group across 1 directory
+  ([#101](https://github.com/flumi3/markdown-refcheck/pull/101),
+  [`ce3e78d`](https://github.com/flumi3/markdown-refcheck/commit/ce3e78df411b41e9891e7053269cf9fb5bc3147f))
+
+Bumps the pip group with 1 update in the / directory:
+  [filelock](https://github.com/tox-dev/py-filelock).
+
+Updates `filelock` from 3.20.1 to 3.20.3 - [Release
+  notes](https://github.com/tox-dev/py-filelock/releases) -
+  [Changelog](https://github.com/tox-dev/filelock/blob/main/docs/changelog.rst) -
+  [Commits](https://github.com/tox-dev/py-filelock/compare/3.20.1...3.20.3)
+
+--- updated-dependencies: - dependency-name: filelock dependency-version: 3.20.3
+
+dependency-type: indirect
+
+dependency-group: pip ...
+
+Signed-off-by: dependabot[bot] <support@github.com>
+
+Co-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+
+- **deps**: Bump requests in the pip group across 1 directory
+  ([#102](https://github.com/flumi3/markdown-refcheck/pull/102),
+  [`58d2464`](https://github.com/flumi3/markdown-refcheck/commit/58d2464cbe9159748d787f1e93aaa764166c7d8a))
+
+Bumps the pip group with 1 update in the / directory: [requests](https://github.com/psf/requests).
+
+Updates `requests` from 2.32.4 to 2.33.0 - [Release notes](https://github.com/psf/requests/releases)
+  - [Changelog](https://github.com/psf/requests/blob/main/HISTORY.md) -
+  [Commits](https://github.com/psf/requests/compare/v2.32.4...v2.33.0)
+
+--- updated-dependencies: - dependency-name: requests dependency-version: 2.33.0
+
+dependency-type: direct:production
+
+dependency-group: pip ...
+
+Signed-off-by: dependabot[bot] <support@github.com>
+
+Co-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+
+
 ## v0.4.3 (2026-03-06)
 
 ### Bug Fixes
