@@ -373,8 +373,9 @@ line 3
         """Test that references inside multi-line HTML comments are ignored."""
         content = """# Test
 [real link](real.md)
-<!--
+<!-- This is a markdown comment that spans multiple lines and includes references that should be ignored:
 [commented link 1](commented1.md)
+
 [commented link 2](commented2.md)
 -->
 [another real](real2.md)
