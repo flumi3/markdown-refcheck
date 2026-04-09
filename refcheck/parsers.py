@@ -7,6 +7,7 @@ logger = logging.getLogger()
 
 CODE_BLOCK_PATTERN = re.compile(r"```(?P<content>[\s\S]*?)```")
 INLINE_CODE_PATTERN = re.compile(r"`(?P<content>[^`\n]+)`")
+HTML_COMMENT_PATTERN = re.compile(r"<!--(?P<content>[\s\S]*?)-->")
 
 # Basic Markdown references
 BASIC_REFERENCE_PATTERN = re.compile(r"!*\[(?P<text>[^\]]+)\]\((?P<link>[^)]+)\)")  # []() and ![]()
@@ -98,8 +99,13 @@ class MarkdownParser:
         inline_code = self._find_matches_with_line_numbers(INLINE_CODE_PATTERN, content)
         logger.info(f"Found {len(inline_code)} inline code spans.")
 
-        # Combine code blocks and inline code for filtering
-        all_code = code_blocks + inline_code
+        # Get all HTML comments, such as <!-- ... -->
+        logger.info("Extracting HTML comments ...")
+        html_comments = self._find_matches_with_line_numbers(HTML_COMMENT_PATTERN, content)
+        logger.info(f"Found {len(html_comments)} HTML comments.")
+
+        # Combine code blocks, inline code, and HTML comments for filtering
+        all_code = code_blocks + inline_code + html_comments
 
         # Get all references that look like this: [text](reference)
         logger.info("Extracting basic references ...")
@@ -139,35 +145,35 @@ class MarkdownParser:
     def _drop_code_references(
         self, references: list[ReferenceMatch], code_sections: list[ReferenceMatch]
     ) -> list[ReferenceMatch]:
-        """Drop references that are part of code blocks or inline code."""
-        logger.info("Dropping references that are part of code blocks or inline code ...")
+        """Drop references that are part of code blocks, inline code, or HTML comments."""
+        logger.info(
+            "Dropping references that are part of code blocks, inline code, or HTML comments ..."
+        )
 
-        # Filter out references that are inside code blocks or inline code
+        # Filter out references whose source span is contained within a code/comment section span.
+        # Position-based comparison prevents incorrectly dropping references that share the same
+        # text as a commented-out or code-block reference but appear at a different location.
         filtered_references = []
         dropped_counter = 0
 
         for ref in references:
-            is_in_code = False
-            for code_section in code_sections:
-                logger.debug(ref.match.group(0))
+            is_in_filtered_section = False
+            for section in code_sections:
+                if section.match.start(0) <= ref.match.start(0) and ref.match.end(
+                    0
+                ) <= section.match.end(0):
+                    logger.info(f"Dropping reference: {ref.match.group(0)}")
+                    is_in_filtered_section = True
+                    dropped_counter += 1
+                    break
 
-                # Check if reference is within the code section content
-                if code_section.match.lastindex and code_section.match.lastindex >= 1:
-                    content = code_section.match.group(1)
-                    logger.debug(f"Code content: {content}")
-                    if ref.match.group(0) in content:
-                        logger.info(f"Dropping reference: {ref.match.group(0)}")
-                        is_in_code = True
-                        dropped_counter += 1
-                        break
-
-            if not is_in_code:
+            if not is_in_filtered_section:
                 filtered_references.append(ref)
 
         if dropped_counter > 0:
             logger.info(f"Dropped {dropped_counter} references.")
         else:
-            logger.info("No code references found.")
+            logger.info("No filtered references found.")
 
         return filtered_references
 
