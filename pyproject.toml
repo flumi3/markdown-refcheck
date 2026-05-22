@@ -38,11 +38,7 @@ version_toml = ["pyproject.toml:tool.poetry.version"]
 version_variables = [
     "pyproject.toml:tool.poetry.version",
     "README.md:rev:tf",
-    "docs/CLI-Reference.md:rev:tf",
-    "docs/Development-Guide.md:rev:tf",
-    "docs/Examples.md:rev:tf",
-    "docs/Integration-Guide.md:rev:tf",
-    "CONTRIBUTING.md:rev:tf",
+    "docs/user-guide/Integration-Guide.md:rev:tf",
 ]
 tag_format = "v{version}"
 
