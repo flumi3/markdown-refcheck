@@ -34,6 +34,49 @@ options:
 - 🎨 **Colored Output** - Clear, color-coded results for easy scanning (disable with `--no-color`)
 - ⚙️ **CI/CD Ready** - Perfect for automated quality checks in your documentation workflows
 - 🚀 **Pre-commit Integration** - Available as a pre-commit hook for automated validation
+- 💬 **Inline Ignore Comments** - Suppress false positives with `<!-- refcheck-ignore -->` directives
+
+## Ignoring References
+
+Use HTML comment directives to suppress false positives on specific lines or sections.
+
+### Skip a single line
+
+Place the comment on its own line to skip the reference on the **next** line:
+
+```markdown
+<!-- refcheck-ignore -->
+[This reference will not be checked](./some/path.md)
+```
+
+Or place it inline to skip the reference on the **same** line:
+
+```markdown
+[This reference will not be checked](./some/path.md) <!-- refcheck-ignore -->
+```
+
+### Skip a section
+
+Wrap a block of lines with start/end directives:
+
+```markdown
+<!-- refcheck-ignore-start -->
+[ignored](./a.md)
+[also ignored](./b.md)
+<!-- refcheck-ignore-end -->
+```
+
+### Optional reason
+
+All directives accept an optional reason after a colon:
+
+```markdown
+<!-- refcheck-ignore: external link only available on VPN -->
+[internal docs](https://internal.example.com/docs)
+```
+
+> **Note:** Both `<!--` and `<!---` (triple-dash) syntax are supported. Directives inside code
+> blocks are not honored.
 
 ## Installation
 
