@@ -113,9 +113,11 @@ class MarkdownParser:
         # Combine code blocks, inline code, and HTML comments for filtering
         all_code = code_blocks + inline_code + html_comments
 
-        # Determine which lines should be ignored via refcheck-ignore directives
+        # Determine which lines should be ignored via refcheck-ignore directives.
+        # Only filter against code blocks and inline code (not HTML comments), since
+        # refcheck-ignore directives are themselves HTML comments.
         logger.info("Checking for refcheck-ignore directives ...")
-        ignored_lines = self._get_ignored_lines(content, all_code)
+        ignored_lines = self._get_ignored_lines(content, code_blocks + inline_code)
 
         # Get all references that look like this: [text](reference)
         logger.info("Extracting basic references ...")
