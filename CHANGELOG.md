@@ -1,5 +1,6 @@
 # CHANGELOG
 
+
 ## v0.5.0 (2026-05-22)
 
 ### Features
@@ -11,46 +12,45 @@
 * feat(parsers): add refcheck-ignore comment directives for line/section skipping
 
 Add support for inline markdown comments to skip reference checking: - <!-- refcheck-ignore --> on
-standalone line: skips next line - <!-- refcheck-ignore --> inline with content: skips that line -
-
+  standalone line: skips next line - <!-- refcheck-ignore --> inline with content: skips that line -
   <!-- refcheck-ignore-start --> / <!-- refcheck-ignore-end -->: skips block - All directives
-
-support optional reason text - Both <!-- and <!--- syntax supported - Directives inside code blocks
-are not honored
+  support optional reason text - Both <!-- and <!--- syntax supported - Directives inside code
+  blocks are not honored
 
 Implements #103
 
-- test(parsers): add comprehensive tests for refcheck-ignore directives
+* test(parsers): add comprehensive tests for refcheck-ignore directives
 
 Add TestRefcheckIgnore class with 16 tests covering: - Standalone ignore (next-line), inline ignore
-(same-line) - Block ignore with start/end directives - Image and inline link filtering - Optional
-reason text, triple-dash syntax - Ignore directives inside code blocks (not honored) - Unmatched
-block start (ignore to EOF) - Multiple ignore comments, no over-suppression - Fixture file tests for
-all scenarios
+  (same-line) - Block ignore with start/end directives - Image and inline link filtering - Optional
+  reason text, triple-dash syntax - Ignore directives inside code blocks (not honored) - Unmatched
+  block start (ignore to EOF) - Multiple ignore comments, no over-suppression - Fixture file tests
+  for all scenarios
 
-Also fix \_get_ignored_lines to filter against code blocks and inline code only (not HTML comments),
-since ignore directives are themselves HTML comments.
+Also fix _get_ignored_lines to filter against code blocks and inline code only (not HTML comments),
+  since ignore directives are themselves HTML comments.
 
-- docs(readme): add ignore comments documentation
+* docs(readme): add ignore comments documentation
 
 Document the three refcheck-ignore modes: - Standalone: skip next line - Inline: skip same line -
-Block: skip entire section - Optional reason text syntax - Note about triple-dash and code block
-behavior
+  Block: skip entire section - Optional reason text syntax - Note about triple-dash and code block
+  behavior
 
-- style(parsers): apply ruff formatting
+* style(parsers): apply ruff formatting
 
-- fix(parsers): address review findings for ignore directives
+* fix(parsers): address review findings for ignore directives
 
-* Add optional reason support to refcheck-ignore-end pattern - Make block suppression exclusive of
+- Add optional reason support to refcheck-ignore-end pattern - Make block suppression exclusive of
   start/end marker lines (only lines between markers are suppressed) - Add regression tests for
   end-with-reason and boundary lines - Update README to mention inline code exclusion and standalone
   marker requirement
 
-- docs: move ignore reference docs from README to docs/Ignoring-References.md
+* docs: move ignore reference docs from README to docs/Ignoring-References.md
 
-* Create dedicated docs/Ignoring-References.md with full documentation - Keep only a feature bullet
-  - link in README - Add to documentation listing in README - Fix fixture files that had
-    formatter-injected blank lines
+- Create dedicated docs/Ignoring-References.md with full documentation - Keep only a feature bullet
+  + link in README - Add to documentation listing in README - Fix fixture files that had
+  formatter-injected blank lines
+
 
 ## v0.4.5 (2026-05-22)
 
@@ -63,12 +63,12 @@ behavior
 * chore(deps): bump pytest in the pip group across 1 directory (#105)
 
 Bumps the pip group with 1 update in the / directory:
-[pytest](https://github.com/pytest-dev/pytest).
+  [pytest](https://github.com/pytest-dev/pytest).
 
-Updates `pytest` from 8.4.2 to 9.0.3 -
-[Release notes](https://github.com/pytest-dev/pytest/releases) -
-[Changelog](https://github.com/pytest-dev/pytest/blob/main/CHANGELOG.rst) -
-[Commits](https://github.com/pytest-dev/pytest/compare/8.4.2...9.0.3)
+Updates `pytest` from 8.4.2 to 9.0.3 - [Release
+  notes](https://github.com/pytest-dev/pytest/releases) -
+  [Changelog](https://github.com/pytest-dev/pytest/blob/main/CHANGELOG.rst) -
+  [Commits](https://github.com/pytest-dev/pytest/compare/8.4.2...9.0.3)
 
 --- updated-dependencies: - dependency-name: pytest dependency-version: 9.0.3
 
@@ -76,51 +76,50 @@ dependency-type: direct:development
 
 dependency-group: pip ...
 
-- chore(deps): bump urllib3 in the pip group across 1 directory (#106)
+* chore(deps): bump urllib3 in the pip group across 1 directory (#106)
 
 Bumps the pip group with 1 update in the / directory: [urllib3](https://github.com/urllib3/urllib3).
 
 Updates `urllib3` from 2.6.3 to 2.7.0 - [Release notes](https://github.com/urllib3/urllib3/releases)
-
-- [Changelog](https://github.com/urllib3/urllib3/blob/main/CHANGES.rst) -
+  - [Changelog](https://github.com/urllib3/urllib3/blob/main/CHANGES.rst) -
   [Commits](https://github.com/urllib3/urllib3/compare/2.6.3...2.7.0)
 
 --- updated-dependencies: - dependency-name: urllib3 dependency-version: 2.7.0
 
 dependency-type: indirect
 
-- chore(deps): bump idna in the pip group across 1 directory (#107)
+* chore(deps): bump idna in the pip group across 1 directory (#107)
 
 Bumps the pip group with 1 update in the / directory: [idna](https://github.com/kjd/idna).
 
 Updates `idna` from 3.10 to 3.15 - [Release notes](https://github.com/kjd/idna/releases) -
-[Changelog](https://github.com/kjd/idna/blob/master/HISTORY.md) -
-[Commits](https://github.com/kjd/idna/compare/v3.10...v3.15)
+  [Changelog](https://github.com/kjd/idna/blob/master/HISTORY.md) -
+  [Commits](https://github.com/kjd/idna/compare/v3.10...v3.15)
 
 --- updated-dependencies: - dependency-name: idna dependency-version: '3.15'
 
-- fix(parsers): exclude bare emails from inline link detection
+* fix(parsers): exclude bare emails from inline link detection
 
 Bare email addresses in angle brackets (e.g. <user@example.com>) were matched by INLINE_LINK_PATTERN
-and flagged as broken local references. Remove the email-matching alternative from the regex so only
-URLs (http://, https://) and explicit mailto: links are matched.
+  and flagged as broken local references. Remove the email-matching alternative from the regex so
+  only URLs (http://, https://) and explicit mailto: links are matched.
 
 Closes #108
 
-- chore(tests): update inline links fixture for email handling
+* chore(tests): update inline links fixture for email handling
 
 Update the fixture to reflect that bare emails in angle brackets are not validated as references by
-refcheck.
+  refcheck.
 
-- fix(ci): analyze PR commits for version preview
+* fix(ci): analyze PR commits for version preview
 
 The version preview workflow was using semantic-release which only analyzes commits on the
-configured release branch (main). In a PR context this meant it never detected version bumps.
+  configured release branch (main). In a PR context this meant it never detected version bumps.
 
 Replace with direct commit message analysis of origin/main..HEAD to correctly preview the version
-bump that would occur after merge.
+  bump that would occur after merge.
 
----
+---------
 
 Signed-off-by: dependabot[bot] <support@github.com>
 
@@ -135,8 +134,8 @@ Co-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.c
 Bumps the pip group with 1 update in the / directory: [idna](https://github.com/kjd/idna).
 
 Updates `idna` from 3.10 to 3.15 - [Release notes](https://github.com/kjd/idna/releases) -
-[Changelog](https://github.com/kjd/idna/blob/master/HISTORY.md) -
-[Commits](https://github.com/kjd/idna/compare/v3.10...v3.15)
+  [Changelog](https://github.com/kjd/idna/blob/master/HISTORY.md) -
+  [Commits](https://github.com/kjd/idna/compare/v3.10...v3.15)
 
 --- updated-dependencies: - dependency-name: idna dependency-version: '3.15'
 
@@ -153,12 +152,12 @@ Co-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.c
   [`070c305`](https://github.com/flumi3/markdown-refcheck/commit/070c305f6039dd8dbcbe702421cf4c7649ecde8c))
 
 Bumps the pip group with 1 update in the / directory:
-[pytest](https://github.com/pytest-dev/pytest).
+  [pytest](https://github.com/pytest-dev/pytest).
 
-Updates `pytest` from 8.4.2 to 9.0.3 -
-[Release notes](https://github.com/pytest-dev/pytest/releases) -
-[Changelog](https://github.com/pytest-dev/pytest/blob/main/CHANGELOG.rst) -
-[Commits](https://github.com/pytest-dev/pytest/compare/8.4.2...9.0.3)
+Updates `pytest` from 8.4.2 to 9.0.3 - [Release
+  notes](https://github.com/pytest-dev/pytest/releases) -
+  [Changelog](https://github.com/pytest-dev/pytest/blob/main/CHANGELOG.rst) -
+  [Commits](https://github.com/pytest-dev/pytest/compare/8.4.2...9.0.3)
 
 --- updated-dependencies: - dependency-name: pytest dependency-version: 9.0.3
 
@@ -177,8 +176,7 @@ Co-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.c
 Bumps the pip group with 1 update in the / directory: [urllib3](https://github.com/urllib3/urllib3).
 
 Updates `urllib3` from 2.6.3 to 2.7.0 - [Release notes](https://github.com/urllib3/urllib3/releases)
-
-- [Changelog](https://github.com/urllib3/urllib3/blob/main/CHANGES.rst) -
+  - [Changelog](https://github.com/urllib3/urllib3/blob/main/CHANGES.rst) -
   [Commits](https://github.com/urllib3/urllib3/compare/2.6.3...2.7.0)
 
 --- updated-dependencies: - dependency-name: urllib3 dependency-version: 2.7.0
@@ -191,6 +189,7 @@ Signed-off-by: dependabot[bot] <support@github.com>
 
 Co-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
 
+
 ## v0.4.4 (2026-04-09)
 
 ### Bug Fixes
@@ -201,14 +200,14 @@ Co-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.c
 
 * fix(parsers): ignore references inside HTML comments
 
-* fix(parsers): use position-based filtering in \_drop_code_references
+* fix(parsers): use position-based filtering in _drop_code_references
 
 Replace substring membership check with span comparison to prevent incorrectly dropping references
-that share the same text as a commented-out or code-block reference at a different position.
+  that share the same text as a commented-out or code-block reference at a different position.
 
-- chore: make test case a bit more real
+* chore: make test case a bit more real
 
-- ci(version-preview): pin python-semantic-release to v7
+* ci(version-preview): pin python-semantic-release to v7
 
 ### Chores
 
@@ -217,12 +216,12 @@ that share the same text as a commented-out or code-block reference at a differe
   [`ce3e78d`](https://github.com/flumi3/markdown-refcheck/commit/ce3e78df411b41e9891e7053269cf9fb5bc3147f))
 
 Bumps the pip group with 1 update in the / directory:
-[filelock](https://github.com/tox-dev/py-filelock).
+  [filelock](https://github.com/tox-dev/py-filelock).
 
-Updates `filelock` from 3.20.1 to 3.20.3 -
-[Release notes](https://github.com/tox-dev/py-filelock/releases) -
-[Changelog](https://github.com/tox-dev/filelock/blob/main/docs/changelog.rst) -
-[Commits](https://github.com/tox-dev/py-filelock/compare/3.20.1...3.20.3)
+Updates `filelock` from 3.20.1 to 3.20.3 - [Release
+  notes](https://github.com/tox-dev/py-filelock/releases) -
+  [Changelog](https://github.com/tox-dev/filelock/blob/main/docs/changelog.rst) -
+  [Commits](https://github.com/tox-dev/py-filelock/compare/3.20.1...3.20.3)
 
 --- updated-dependencies: - dependency-name: filelock dependency-version: 3.20.3
 
@@ -241,8 +240,7 @@ Co-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.c
 Bumps the pip group with 1 update in the / directory: [requests](https://github.com/psf/requests).
 
 Updates `requests` from 2.32.4 to 2.33.0 - [Release notes](https://github.com/psf/requests/releases)
-
-- [Changelog](https://github.com/psf/requests/blob/main/HISTORY.md) -
+  - [Changelog](https://github.com/psf/requests/blob/main/HISTORY.md) -
   [Commits](https://github.com/psf/requests/compare/v2.32.4...v2.33.0)
 
 --- updated-dependencies: - dependency-name: requests dependency-version: 2.33.0
@@ -254,6 +252,7 @@ dependency-group: pip ...
 Signed-off-by: dependabot[bot] <support@github.com>
 
 Co-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+
 
 ## v0.4.3 (2026-03-06)
 
@@ -269,12 +268,12 @@ Co-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.c
   ([`5709637`](https://github.com/flumi3/markdown-refcheck/commit/5709637b15fe6be2d3f4ddbb13f27c521d35579c))
 
 Bumps the pip group with 1 update in the / directory:
-[virtualenv](https://github.com/pypa/virtualenv).
+  [virtualenv](https://github.com/pypa/virtualenv).
 
-Updates `virtualenv` from 20.33.1 to 20.36.1 -
-[Release notes](https://github.com/pypa/virtualenv/releases) -
-[Changelog](https://github.com/pypa/virtualenv/blob/main/docs/changelog.rst) -
-[Commits](https://github.com/pypa/virtualenv/compare/20.33.1...20.36.1)
+Updates `virtualenv` from 20.33.1 to 20.36.1 - [Release
+  notes](https://github.com/pypa/virtualenv/releases) -
+  [Changelog](https://github.com/pypa/virtualenv/blob/main/docs/changelog.rst) -
+  [Commits](https://github.com/pypa/virtualenv/compare/20.33.1...20.36.1)
 
 --- updated-dependencies: - dependency-name: virtualenv dependency-version: 20.36.1
 
@@ -307,6 +306,7 @@ Signed-off-by: dependabot[bot] <support@github.com>
 - Improve README
   ([`6f93bf6`](https://github.com/flumi3/markdown-refcheck/commit/6f93bf60f76cd6fd8e0819fe7bc835a4459c6dc8))
 
+
 ## v0.4.2 (2026-01-20)
 
 ### Bug Fixes
@@ -322,12 +322,12 @@ This supplements the previous 'fix status codes' commit with proper semantic ver
   ([`818abab`](https://github.com/flumi3/markdown-refcheck/commit/818ababf557795f8c3e7a2ce5f6e1affdc8aabcb))
 
 Bumps the pip group with 1 update in the / directory:
-[filelock](https://github.com/tox-dev/py-filelock).
+  [filelock](https://github.com/tox-dev/py-filelock).
 
-Updates `filelock` from 3.20.0 to 3.20.1 -
-[Release notes](https://github.com/tox-dev/py-filelock/releases) -
-[Changelog](https://github.com/tox-dev/filelock/blob/main/docs/changelog.rst) -
-[Commits](https://github.com/tox-dev/py-filelock/compare/3.20.0...3.20.1)
+Updates `filelock` from 3.20.0 to 3.20.1 - [Release
+  notes](https://github.com/tox-dev/py-filelock/releases) -
+  [Changelog](https://github.com/tox-dev/filelock/blob/main/docs/changelog.rst) -
+  [Commits](https://github.com/tox-dev/py-filelock/compare/3.20.0...3.20.1)
 
 --- updated-dependencies: - dependency-name: filelock dependency-version: 3.20.1
 
@@ -343,8 +343,7 @@ Signed-off-by: dependabot[bot] <support@github.com>
 Bumps the pip group with 1 update in the / directory: [urllib3](https://github.com/urllib3/urllib3).
 
 Updates `urllib3` from 2.6.0 to 2.6.3 - [Release notes](https://github.com/urllib3/urllib3/releases)
-
-- [Changelog](https://github.com/urllib3/urllib3/blob/main/CHANGES.rst) -
+  - [Changelog](https://github.com/urllib3/urllib3/blob/main/CHANGES.rst) -
   [Commits](https://github.com/urllib3/urllib3/compare/2.6.0...2.6.3)
 
 --- updated-dependencies: - dependency-name: urllib3 dependency-version: 2.6.3
@@ -360,6 +359,7 @@ Signed-off-by: dependabot[bot] <support@github.com>
 - Add pipx installation instructions and update repository metadata in pyproject.toml
   ([`447a75f`](https://github.com/flumi3/markdown-refcheck/commit/447a75fc98c8d9bfee387f4372ffd106d76a7b43))
 
+
 ## v0.4.1 (2025-12-13)
 
 ### Bug Fixes
@@ -371,6 +371,7 @@ Signed-off-by: dependabot[bot] <support@github.com>
 
 - Update badge links and remove outdated coverage badge in README.md
   ([`ca6d611`](https://github.com/flumi3/markdown-refcheck/commit/ca6d611fda0e6cf82047e2bd8e49456c7093860d))
+
 
 ## v0.4.0 (2025-12-13)
 
@@ -390,8 +391,8 @@ Signed-off-by: dependabot[bot] <support@github.com>
 
 - Optimize regex patterns: replace greedy .+ with specific character classes -
   BASIC_REFERENCE_PATTERN: [^\]]+ for text, [^)]+ for links - INLINE_LINK_PATTERN: [^>]+ instead of
-  .+ - Fix \_drop_code_block_references: use list filtering instead of modifying during iteration -
-  Implement \_process_inline_links for processing angle-bracket enclosed links - Activate inline
+  .+ - Fix _drop_code_block_references: use list filtering instead of modifying during iteration -
+  Implement _process_inline_links for processing angle-bracket enclosed links - Activate inline
   links validation in main processing loop - Fix header path resolution: resolve relative markdown
   file paths to absolute before checking for headers (fixes validation of other.md#header patterns)
 
@@ -432,16 +433,16 @@ Signed-off-by: dependabot[bot] <support@github.com>
   ([`f471032`](https://github.com/flumi3/markdown-refcheck/commit/f4710328d8a6ac4664184eec389f3d62ec322626))
 
 Add `open-pull-requests-limit: 0`. This will prevent opening of pull requests for normal version
-bumps. Security updates will still be created.
+  bumps. Security updates will still be created.
 
 - **deps**: Bump requests from 2.32.3 to 2.32.4
   ([#50](https://github.com/flumi3/markdown-refcheck/pull/50),
   [`d2383f4`](https://github.com/flumi3/markdown-refcheck/commit/d2383f4eafdaadadc1fa3d08b00bc5dde25a2408))
 
-Bumps [requests](https://github.com/psf/requests) from 2.32.3 to 2.32.4. -
-[Release notes](https://github.com/psf/requests/releases) -
-[Changelog](https://github.com/psf/requests/blob/main/HISTORY.md) -
-[Commits](https://github.com/psf/requests/compare/v2.32.3...v2.32.4)
+Bumps [requests](https://github.com/psf/requests) from 2.32.3 to 2.32.4. - [Release
+  notes](https://github.com/psf/requests/releases) -
+  [Changelog](https://github.com/psf/requests/blob/main/HISTORY.md) -
+  [Commits](https://github.com/psf/requests/compare/v2.32.3...v2.32.4)
 
 --- updated-dependencies: - dependency-name: requests dependency-version: 2.32.4
 
@@ -481,10 +482,10 @@ Co-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.c
   ([#37](https://github.com/flumi3/markdown-refcheck/pull/37),
   [`ec4822f`](https://github.com/flumi3/markdown-refcheck/commit/ec4822f65f6c4bf52d49cd02db64b28515eef202))
 
-Bumps [commitizen](https://github.com/commitizen-tools/commitizen) from 4.4.1 to 4.6.1. -
-[Release notes](https://github.com/commitizen-tools/commitizen/releases) -
-[Changelog](https://github.com/commitizen-tools/commitizen/blob/master/CHANGELOG.md) -
-[Commits](https://github.com/commitizen-tools/commitizen/compare/v4.4.1...v4.6.1)
+Bumps [commitizen](https://github.com/commitizen-tools/commitizen) from 4.4.1 to 4.6.1. - [Release
+  notes](https://github.com/commitizen-tools/commitizen/releases) -
+  [Changelog](https://github.com/commitizen-tools/commitizen/blob/master/CHANGELOG.md) -
+  [Commits](https://github.com/commitizen-tools/commitizen/compare/v4.4.1...v4.6.1)
 
 --- updated-dependencies: - dependency-name: commitizen dependency-version: 4.6.1
 
@@ -500,10 +501,10 @@ Co-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.c
   ([#49](https://github.com/flumi3/markdown-refcheck/pull/49),
   [`4d114b3`](https://github.com/flumi3/markdown-refcheck/commit/4d114b3eefaaa4487c7c78de26dc7e4b9454caf7))
 
-Bumps [commitizen](https://github.com/commitizen-tools/commitizen) from 4.6.1 to 4.8.3. -
-[Release notes](https://github.com/commitizen-tools/commitizen/releases) -
-[Changelog](https://github.com/commitizen-tools/commitizen/blob/master/CHANGELOG.md) -
-[Commits](https://github.com/commitizen-tools/commitizen/compare/v4.6.1...v4.8.3)
+Bumps [commitizen](https://github.com/commitizen-tools/commitizen) from 4.6.1 to 4.8.3. - [Release
+  notes](https://github.com/commitizen-tools/commitizen/releases) -
+  [Changelog](https://github.com/commitizen-tools/commitizen/blob/master/CHANGELOG.md) -
+  [Commits](https://github.com/commitizen-tools/commitizen/compare/v4.6.1...v4.8.3)
 
 --- updated-dependencies: - dependency-name: commitizen dependency-version: 4.8.3
 
@@ -519,10 +520,10 @@ Co-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.c
   ([#53](https://github.com/flumi3/markdown-refcheck/pull/53),
   [`c94ac98`](https://github.com/flumi3/markdown-refcheck/commit/c94ac98ec6cd58b100f39516ae0302f8233bd813))
 
-Bumps [pytest](https://github.com/pytest-dev/pytest) from 8.3.5 to 8.4.1. -
-[Release notes](https://github.com/pytest-dev/pytest/releases) -
-[Changelog](https://github.com/pytest-dev/pytest/blob/main/CHANGELOG.rst) -
-[Commits](https://github.com/pytest-dev/pytest/compare/8.3.5...8.4.1)
+Bumps [pytest](https://github.com/pytest-dev/pytest) from 8.3.5 to 8.4.1. - [Release
+  notes](https://github.com/pytest-dev/pytest/releases) -
+  [Changelog](https://github.com/pytest-dev/pytest/blob/main/CHANGELOG.rst) -
+  [Commits](https://github.com/pytest-dev/pytest/compare/8.3.5...8.4.1)
 
 --- updated-dependencies: - dependency-name: pytest dependency-version: 8.4.1
 
@@ -538,10 +539,10 @@ Co-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.c
   ([#69](https://github.com/flumi3/markdown-refcheck/pull/69),
   [`ea9d07c`](https://github.com/flumi3/markdown-refcheck/commit/ea9d07cf232644b578fad26a529d512bb46c1e5a))
 
-Bumps [pytest](https://github.com/pytest-dev/pytest) from 8.4.1 to 8.4.2. -
-[Release notes](https://github.com/pytest-dev/pytest/releases) -
-[Changelog](https://github.com/pytest-dev/pytest/blob/main/CHANGELOG.rst) -
-[Commits](https://github.com/pytest-dev/pytest/compare/8.4.1...8.4.2)
+Bumps [pytest](https://github.com/pytest-dev/pytest) from 8.4.1 to 8.4.2. - [Release
+  notes](https://github.com/pytest-dev/pytest/releases) -
+  [Changelog](https://github.com/pytest-dev/pytest/blob/main/CHANGELOG.rst) -
+  [Commits](https://github.com/pytest-dev/pytest/compare/8.4.1...8.4.2)
 
 --- updated-dependencies: - dependency-name: pytest dependency-version: 8.4.2
 
@@ -558,11 +559,11 @@ Co-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.c
   [`151cf92`](https://github.com/flumi3/markdown-refcheck/commit/151cf929d2f6095bac240c8c5707158b8751a9c6))
 
 Bumps [python-semantic-release](https://github.com/python-semantic-release/python-semantic-release)
-from 10.3.1 to 10.4.1. -
-[Release notes](https://github.com/python-semantic-release/python-semantic-release/releases) -
-[Changelog](https://github.com/python-semantic-release/python-semantic-release/blob/master/CHANGELOG.rst)
-
-- [Commits](https://github.com/python-semantic-release/python-semantic-release/compare/v10.3.1...v10.4.1)
+  from 10.3.1 to 10.4.1. - [Release
+  notes](https://github.com/python-semantic-release/python-semantic-release/releases) -
+  [Changelog](https://github.com/python-semantic-release/python-semantic-release/blob/master/CHANGELOG.rst)
+  -
+  [Commits](https://github.com/python-semantic-release/python-semantic-release/compare/v10.3.1...v10.4.1)
 
 --- updated-dependencies: - dependency-name: python-semantic-release dependency-version: 10.4.1
 
@@ -579,11 +580,11 @@ Co-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.c
   [`b2c89f3`](https://github.com/flumi3/markdown-refcheck/commit/b2c89f3e807ad4d3ef80bb6ae1bb1190d76c5299))
 
 Bumps [python-semantic-release](https://github.com/python-semantic-release/python-semantic-release)
-from 9.21.0 to 9.21.1. -
-[Release notes](https://github.com/python-semantic-release/python-semantic-release/releases) -
-[Changelog](https://github.com/python-semantic-release/python-semantic-release/blob/master/CHANGELOG.rst)
-
-- [Commits](https://github.com/python-semantic-release/python-semantic-release/compare/v9.21...v9.21.1)
+  from 9.21.0 to 9.21.1. - [Release
+  notes](https://github.com/python-semantic-release/python-semantic-release/releases) -
+  [Changelog](https://github.com/python-semantic-release/python-semantic-release/blob/master/CHANGELOG.rst)
+  -
+  [Commits](https://github.com/python-semantic-release/python-semantic-release/compare/v9.21...v9.21.1)
 
 --- updated-dependencies: - dependency-name: python-semantic-release dependency-version: 9.21.1
 
@@ -600,11 +601,11 @@ Co-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.c
   [`4da4e26`](https://github.com/flumi3/markdown-refcheck/commit/4da4e265528e7d54ebc6b6328654ef6e96c0f6a2))
 
 Bumps [python-semantic-release](https://github.com/python-semantic-release/python-semantic-release)
-from 9.21.1 to 10.3.1. -
-[Release notes](https://github.com/python-semantic-release/python-semantic-release/releases) -
-[Changelog](https://github.com/python-semantic-release/python-semantic-release/blob/master/CHANGELOG.rst)
-
-- [Commits](https://github.com/python-semantic-release/python-semantic-release/compare/v9.21.1...v10.3.1)
+  from 9.21.1 to 10.3.1. - [Release
+  notes](https://github.com/python-semantic-release/python-semantic-release/releases) -
+  [Changelog](https://github.com/python-semantic-release/python-semantic-release/blob/master/CHANGELOG.rst)
+  -
+  [Commits](https://github.com/python-semantic-release/python-semantic-release/compare/v9.21.1...v10.3.1)
 
 --- updated-dependencies: - dependency-name: python-semantic-release dependency-version: 10.3.1
 
@@ -620,10 +621,10 @@ Co-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.c
   ([#36](https://github.com/flumi3/markdown-refcheck/pull/36),
   [`a720223`](https://github.com/flumi3/markdown-refcheck/commit/a7202239bbfeedf251066ccd7cbe07cd415ec476))
 
-Bumps [ruff](https://github.com/astral-sh/ruff) from 0.11.2 to 0.11.8. -
-[Release notes](https://github.com/astral-sh/ruff/releases) -
-[Changelog](https://github.com/astral-sh/ruff/blob/main/CHANGELOG.md) -
-[Commits](https://github.com/astral-sh/ruff/compare/0.11.2...0.11.8)
+Bumps [ruff](https://github.com/astral-sh/ruff) from 0.11.2 to 0.11.8. - [Release
+  notes](https://github.com/astral-sh/ruff/releases) -
+  [Changelog](https://github.com/astral-sh/ruff/blob/main/CHANGELOG.md) -
+  [Commits](https://github.com/astral-sh/ruff/compare/0.11.2...0.11.8)
 
 --- updated-dependencies: - dependency-name: ruff dependency-version: 0.11.8
 
@@ -685,7 +686,7 @@ Co-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.c
 
 - Update make init to auto-install pre-commit hooks - Add make bump-version to preview next version
   - Add make changelog to show unreleased changes - Add make check-version to display current/next
-    versions - Add make update-hooks to keep pre-commit hooks current
+  versions - Add make update-hooks to keep pre-commit hooks current
 
 - Configure commitizen and semantic-release for v1.0.0 transition
   ([`9cd0282`](https://github.com/flumi3/markdown-refcheck/commit/9cd02823a414eed8f7e0cccf59c583ead80e6b2f))
@@ -753,7 +754,7 @@ Co-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.c
 
 - Created `tests/conftest.py` with centralized fixtures: - Settings mocks for all flag combinations
   - HTTP request mocks (success, 404, timeout, SSL errors) - File system helpers (temp files,
-    directory structures) - Common test data (sample markdown content)
+  directory structures) - Common test data (sample markdown content)
 
 - Created `tests/fixtures/` directory structure: - `valid/` - Valid markdown with various reference
   types - `code_blocks/` - Code block edge cases - `broken_refs/` - Intentionally broken references
@@ -761,6 +762,7 @@ Co-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.c
 
 - Enhance test coverage configuration and enforce coverage thresholds
   ([`a33f889`](https://github.com/flumi3/markdown-refcheck/commit/a33f889b263eb440ddef3a755de492d2919c3d9b))
+
 
 ## v0.3.0 (2025-03-29)
 
@@ -786,6 +788,7 @@ Co-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.c
 
 - Enable refcheck to be used as pre-commit hook
   ([`39d77ad`](https://github.com/flumi3/markdown-refcheck/commit/39d77adda324e0331c6d5a241158cba1ac846ff5))
+
 
 ## v0.2.0 (2025-03-28)
 
@@ -818,10 +821,10 @@ Co-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.c
   ([#22](https://github.com/flumi3/markdown-refcheck/pull/22),
   [`70afcca`](https://github.com/flumi3/markdown-refcheck/commit/70afcca83009ba5fd5dbada14eca8ab476832e97))
 
-Bumps [commitizen](https://github.com/commitizen-tools/commitizen) from 4.2.2 to 4.4.1. -
-[Release notes](https://github.com/commitizen-tools/commitizen/releases) -
-[Changelog](https://github.com/commitizen-tools/commitizen/blob/master/CHANGELOG.md) -
-[Commits](https://github.com/commitizen-tools/commitizen/compare/v4.2.2...v4.4.1)
+Bumps [commitizen](https://github.com/commitizen-tools/commitizen) from 4.2.2 to 4.4.1. - [Release
+  notes](https://github.com/commitizen-tools/commitizen/releases) -
+  [Changelog](https://github.com/commitizen-tools/commitizen/blob/master/CHANGELOG.md) -
+  [Commits](https://github.com/commitizen-tools/commitizen/compare/v4.2.2...v4.4.1)
 
 --- updated-dependencies: - dependency-name: commitizen dependency-type: direct:development
 
@@ -835,10 +838,10 @@ Co-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.c
   ([#23](https://github.com/flumi3/markdown-refcheck/pull/23),
   [`dcd2b38`](https://github.com/flumi3/markdown-refcheck/commit/dcd2b3889137896b292bf04419e0e52a53d9bf19))
 
-Bumps [pytest](https://github.com/pytest-dev/pytest) from 8.3.4 to 8.3.5. -
-[Release notes](https://github.com/pytest-dev/pytest/releases) -
-[Changelog](https://github.com/pytest-dev/pytest/blob/main/CHANGELOG.rst) -
-[Commits](https://github.com/pytest-dev/pytest/compare/8.3.4...8.3.5)
+Bumps [pytest](https://github.com/pytest-dev/pytest) from 8.3.4 to 8.3.5. - [Release
+  notes](https://github.com/pytest-dev/pytest/releases) -
+  [Changelog](https://github.com/pytest-dev/pytest/blob/main/CHANGELOG.rst) -
+  [Commits](https://github.com/pytest-dev/pytest/compare/8.3.4...8.3.5)
 
 --- updated-dependencies: - dependency-name: pytest dependency-type: direct:development
 
@@ -853,14 +856,14 @@ Co-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.c
   [`f1a3ad7`](https://github.com/flumi3/markdown-refcheck/commit/f1a3ad7452916c490c64c819880de572d6415df8))
 
 Bumps [python-semantic-release](https://github.com/python-semantic-release/python-semantic-release)
-from 9.20.0 to 9.21.0. -
-[Release notes](https://github.com/python-semantic-release/python-semantic-release/releases) -
-[Changelog](https://github.com/python-semantic-release/python-semantic-release/blob/master/CHANGELOG.rst)
-
-- [Commits](https://github.com/python-semantic-release/python-semantic-release/compare/v9.20...v9.21)
+  from 9.20.0 to 9.21.0. - [Release
+  notes](https://github.com/python-semantic-release/python-semantic-release/releases) -
+  [Changelog](https://github.com/python-semantic-release/python-semantic-release/blob/master/CHANGELOG.rst)
+  -
+  [Commits](https://github.com/python-semantic-release/python-semantic-release/compare/v9.20...v9.21)
 
 --- updated-dependencies: - dependency-name: python-semantic-release dependency-type:
-direct:development
+  direct:development
 
 update-type: version-update:semver-minor ...
 
@@ -872,10 +875,10 @@ Co-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.c
   ([#27](https://github.com/flumi3/markdown-refcheck/pull/27),
   [`0913ac6`](https://github.com/flumi3/markdown-refcheck/commit/0913ac6ce5892e0c5d4e446d6040a8c38066e87e))
 
-Bumps [ruff](https://github.com/astral-sh/ruff) from 0.11.0 to 0.11.2. -
-[Release notes](https://github.com/astral-sh/ruff/releases) -
-[Changelog](https://github.com/astral-sh/ruff/blob/main/CHANGELOG.md) -
-[Commits](https://github.com/astral-sh/ruff/compare/0.11.0...0.11.2)
+Bumps [ruff](https://github.com/astral-sh/ruff) from 0.11.0 to 0.11.2. - [Release
+  notes](https://github.com/astral-sh/ruff/releases) -
+  [Changelog](https://github.com/astral-sh/ruff/blob/main/CHANGELOG.md) -
+  [Commits](https://github.com/astral-sh/ruff/compare/0.11.0...0.11.2)
 
 --- updated-dependencies: - dependency-name: ruff dependency-type: direct:development
 
@@ -889,10 +892,10 @@ Co-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.c
   ([#26](https://github.com/flumi3/markdown-refcheck/pull/26),
   [`da9f7a3`](https://github.com/flumi3/markdown-refcheck/commit/da9f7a3e3d71bcf078f5b51db42926e2990bc4dc))
 
-Bumps [ruff](https://github.com/astral-sh/ruff) from 0.9.7 to 0.11.0. -
-[Release notes](https://github.com/astral-sh/ruff/releases) -
-[Changelog](https://github.com/astral-sh/ruff/blob/main/CHANGELOG.md) -
-[Commits](https://github.com/astral-sh/ruff/compare/0.9.7...0.11.0)
+Bumps [ruff](https://github.com/astral-sh/ruff) from 0.9.7 to 0.11.0. - [Release
+  notes](https://github.com/astral-sh/ruff/releases) -
+  [Changelog](https://github.com/astral-sh/ruff/blob/main/CHANGELOG.md) -
+  [Commits](https://github.com/astral-sh/ruff/compare/0.9.7...0.11.0)
 
 --- updated-dependencies: - dependency-name: ruff dependency-type: direct:development
 
@@ -959,9 +962,12 @@ Co-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.c
 
 * remove unused import
 
+
 ## v0.1.5 (2025-01-22)
 
+
 ## v0.1.4 (2025-01-17)
+
 
 ## v0.1.3 (2024-11-28)
 
@@ -970,6 +976,7 @@ Co-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.c
 - Markdown file parsing
   ([`a5625f7`](https://github.com/flumi3/markdown-refcheck/commit/a5625f7965aeb271426aca1374de63d9157abddf))
 
+
 ## v0.1.2 (2024-11-27)
 
 ### Bug Fixes
@@ -977,7 +984,7 @@ Co-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.c
 - Release workflow poetry install ([#5](https://github.com/flumi3/markdown-refcheck/pull/5),
   [`e08b80f`](https://github.com/flumi3/markdown-refcheck/commit/e08b80f43035c3d99ec1d31453d96d1e281d535f))
 
-* change workflow name _ fix poetry install _ add tests to flake8 check and resolve issues
+* change workflow name * fix poetry install * add tests to flake8 check and resolve issues
 
 ### Features
 
@@ -988,7 +995,7 @@ Co-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.c
 - Ci workflow ([#3](https://github.com/flumi3/markdown-refcheck/pull/3),
   [`c28e893`](https://github.com/flumi3/markdown-refcheck/commit/c28e893afc6c0fc4e24212097e1fb5431a3f90e4))
 
-* add flake8 _ create ci workflow _ change python version to ^3.9
+* add flake8 * create ci workflow * change python version to ^3.9
 
 - Directories and paths are now specified together
   ([`a391558`](https://github.com/flumi3/markdown-refcheck/commit/a3915586e4ed50b69ab7fd7e7e3793d21776e7d0))

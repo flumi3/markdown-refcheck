@@ -6,3 +6,4 @@ dist/
 *.py
 tests/fixtures/**
 tests/sample_markdown.md
+CHANGELOG.md
