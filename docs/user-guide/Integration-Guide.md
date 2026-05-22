@@ -68,6 +68,64 @@ jobs:
       - run: refcheck . --check-remote --no-color
 ```
 
+## Azure DevOps Pipelines
+
+Validate documentation references in Azure DevOps pull request builds:
+
+```yaml
+# azure-pipelines.yml
+trigger:
+  branches:
+    include:
+      - main
+
+pr:
+  paths:
+    include:
+      - "**.md"
+
+pool:
+  vmImage: "ubuntu-latest"
+
+steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: "3.11"
+
+  - script: pip install refcheck
+    displayName: "Install RefCheck"
+
+  - script: refcheck . --no-color -e node_modules/
+    displayName: "Check Markdown references"
+```
+
+For a scheduled pipeline that also validates remote URLs:
+
+```yaml
+# azure-pipelines-weekly-docs.yml
+schedules:
+  - cron: "0 0 * * 0"
+    displayName: "Weekly documentation audit"
+    branches:
+      include:
+        - main
+    always: true
+
+pool:
+  vmImage: "ubuntu-latest"
+
+steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: "3.11"
+
+  - script: pip install refcheck
+    displayName: "Install RefCheck"
+
+  - script: refcheck . --check-remote --no-color
+    displayName: "Check Markdown references (including remote)"
+```
+
 ## Makefile
 
 ```makefile
