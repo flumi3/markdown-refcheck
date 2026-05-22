@@ -12,7 +12,7 @@ HTML_COMMENT_PATTERN = re.compile(r"<!--(?P<content>[\s\S]*?)-->")
 # Refcheck ignore directives — support both <!-- and <!--- (2 or 3 dashes)
 REFCHECK_IGNORE_PATTERN = re.compile(r"<!---?\s*refcheck-ignore\s*(?::.*?)?\s*-->")
 REFCHECK_IGNORE_START_PATTERN = re.compile(r"<!---?\s*refcheck-ignore-start\s*(?::.*?)?\s*-->")
-REFCHECK_IGNORE_END_PATTERN = re.compile(r"<!---?\s*refcheck-ignore-end\s*-->")
+REFCHECK_IGNORE_END_PATTERN = re.compile(r"<!---?\s*refcheck-ignore-end\s*(?::.*?)?\s*-->")
 
 
 # Basic Markdown references
@@ -285,14 +285,14 @@ class MarkdownParser:
                     break
 
             if matching_end:
-                for line in range(start.line_number, matching_end.line_number + 1):
+                for line in range(start.line_number + 1, matching_end.line_number):
                     ignored_lines.add(line)
             else:
                 logger.warning(
                     f"Unmatched refcheck-ignore-start at line {start.line_number}, "
                     f"ignoring references until end of file."
                 )
-                for line in range(start.line_number, total_lines + 1):
+                for line in range(start.line_number + 1, total_lines + 1):
                     ignored_lines.add(line)
 
         if ignored_lines:

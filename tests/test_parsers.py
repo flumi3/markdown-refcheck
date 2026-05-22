@@ -742,3 +742,35 @@ class TestRefcheckIgnore:
         assert "ignored.md" not in links
         assert "ignored1.md" not in links
         assert "ignored2.md" not in links
+
+    def test_block_end_with_reason(self, temp_markdown_file):
+        """Block end directive with an optional reason is recognized."""
+        content = """\
+[kept](kept.md)
+<!-- refcheck-ignore-start: reason -->
+[ignored](ignored.md)
+<!-- refcheck-ignore-end: done -->
+[also_kept](also_kept.md)
+"""
+        file_path = temp_markdown_file(content)
+        parser = MarkdownParser()
+        result = parser.parse_markdown_file(file_path)
+
+        links = [r.link for r in result["basic_references"]]
+        assert links == ["kept.md", "also_kept.md"]
+
+    def test_block_markers_do_not_suppress_own_lines(self, temp_markdown_file):
+        """References on start/end marker lines are not suppressed."""
+        content = """\
+[before](before.md) <!-- refcheck-ignore-start -->
+[ignored](ignored.md)
+<!-- refcheck-ignore-end --> [after](after.md)
+"""
+        file_path = temp_markdown_file(content)
+        parser = MarkdownParser()
+        result = parser.parse_markdown_file(file_path)
+
+        links = [r.link for r in result["basic_references"]]
+        assert "before.md" in links
+        assert "after.md" in links
+        assert "ignored.md" not in links

@@ -76,7 +76,8 @@ All directives accept an optional reason after a colon:
 ```
 
 > **Note:** Both `<!--` and `<!---` (triple-dash) syntax are supported. Directives inside code
-> blocks are not honored.
+> blocks or inline code are not honored. Block start/end markers should be placed on their own
+> lines.
 
 ## Installation
 
