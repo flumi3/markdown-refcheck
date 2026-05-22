@@ -241,9 +241,7 @@ class MarkdownParser:
             references.append(reference)
         return references
 
-    def _get_ignored_lines(
-        self, content: str, code_sections: list[ReferenceMatch]
-    ) -> set[int]:
+    def _get_ignored_lines(self, content: str, code_sections: list[ReferenceMatch]) -> set[int]:
         """Determine which lines should be ignored based on refcheck-ignore directives.
 
         Supports:
@@ -270,9 +268,7 @@ class MarkdownParser:
                 ignored_lines.add(m.line_number)
 
         # --- Block ignore directives ---
-        start_matches = self._find_matches_with_line_numbers(
-            REFCHECK_IGNORE_START_PATTERN, content
-        )
+        start_matches = self._find_matches_with_line_numbers(REFCHECK_IGNORE_START_PATTERN, content)
         start_matches = self._drop_code_references(start_matches, code_sections)
 
         end_matches = self._find_matches_with_line_numbers(REFCHECK_IGNORE_END_PATTERN, content)
