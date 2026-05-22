@@ -1,0 +1,43 @@
+# MD013 - Line length: disabled, Prettier handles line wrapping
+MD013: false
+
+# MD024 - Multiple headings with the same content: allow siblings only
+MD024:
+  siblings_only: true
+
+# MD028 - Blank line inside blockquote: disabled, intentional visual separation
+MD028: false
+
+# MD036 - Emphasis used instead of a heading: disabled, project uses bold callout lines
+MD036: false
+
+# MD041 - First line in a file should be a top-level heading: disabled
+MD041: false
+
+# MD046 - Code block style: disabled, admonition blocks cause false positives
+MD046: false
+
+# Allowed HTML elements
+MD033:
+  allowed_elements:
+    - br
+    - details
+    - summary
+    - sup
+    - sub
+    - kbd
+
+# Heading style: ATX-style (## heading)
+MD003:
+  style: atx
+
+# Emphasis style: underscores for italic, asterisks for bold
+MD049:
+  style: underscore
+
+MD050:
+  style: asterisk
+
+# Code fence style: backticks
+MD048:
+  style: backtick

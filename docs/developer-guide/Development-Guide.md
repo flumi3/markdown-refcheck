@@ -34,26 +34,29 @@ make help            # Show all available commands
 ### Core Pipeline
 
 1. **CLI** → `argparse` in `cli.py`, exposed as singleton `settings` in `settings.py`
-2. **File Discovery** → `get_markdown_files_from_args()` in `utils.py` collects `.md` files respecting `--exclude`
+2. **File Discovery** → `get_markdown_files_from_args()` in `utils.py` collects `.md` files
+   respecting `--exclude`
 3. **Parsing** → `MarkdownParser` extracts references using regex patterns, filters out code blocks
 4. **Validation** → `ReferenceChecker` validates each reference (local files, headers, remote URLs)
 5. **Reporting** → Aggregates broken refs, prints summary with colored output
 
 ### Key Components
 
-- **`parsers.py`** — Regex-based extraction of references. Code blocks/inline code are extracted first to filter false
-  positives. Returns dict with keys: `basic_references`, `basic_images`, `inline_links`.
+- **`parsers.py`** — Regex-based extraction of references. Code blocks/inline code are extracted
+  first to filter false positives. Returns dict with keys: `basic_references`, `basic_images`,
+  `inline_links`.
 - **`validators.py`** — `file_exists()` handles relative, Windows backslash, and absolute paths.
-  `is_valid_markdown_reference()` validates `.md` files and header anchors. Remote checks use `requests.head()` with 5s
-  timeout.
-- **`settings.py`** — Properties only (no setters), initialized once from CLI args. Returns empty defaults when running
-  under pytest.
+  `is_valid_markdown_reference()` validates `.md` files and header anchors. Remote checks use
+  `requests.head()` with 5s timeout.
+- **`settings.py`** — Properties only (no setters), initialized once from CLI args. Returns empty
+  defaults when running under pytest.
 
 ## Project Conventions
 
 - **Path handling**: `os.path` (not `pathlib`), normalize with `os.path.abspath()`
 - **Logging**: Module-level `logger = logging.getLogger()`, setup via `log_conf.py`
-- **Color output**: `print_red()`, `print_green()`, `print_yellow()` in `utils.py` — respect `settings.no_color`
+- **Color output**: `print_red()`, `print_green()`, `print_yellow()` in `utils.py` — respect
+  `settings.no_color`
 - **Regex patterns**: Defined at module level as compiled patterns
 - **Error handling**: Broad try-except for file I/O, `requests.exceptions.RequestException` for HTTP
 
@@ -74,20 +77,21 @@ poetry run pytest -k "test_header"
 
 ## Tooling
 
-| Tool | Purpose | Config |
-|------|---------|--------|
-| **Poetry** | Package management | `pyproject.toml` |
-| **Ruff** | Format + lint | Line length: 100 |
-| **MyPy** | Type checking | `disallow_untyped_defs = false` |
-| **Vulture** | Dead code detection | Min confidence: 80 |
-| **Deptry** | Unused dependency detection | — |
+| Tool        | Purpose                     | Config                          |
+| ----------- | --------------------------- | ------------------------------- |
+| **Poetry**  | Package management          | `pyproject.toml`                |
+| **Ruff**    | Format + lint               | Line length: 100                |
+| **MyPy**    | Type checking               | `disallow_untyped_defs = false` |
+| **Vulture** | Dead code detection         | Min confidence: 80              |
+| **Deptry**  | Unused dependency detection | —                               |
 
 ## Release Process
 
 Automated via GitHub Actions on push to `main`:
 
 1. `python-semantic-release` analyzes commit messages
-2. Version bumped based on commit types (see [CONTRIBUTING.md](../../CONTRIBUTING.md#commit-convention))
+2. Version bumped based on commit types (see
+   [CONTRIBUTING.md](../../CONTRIBUTING.md#commit-convention))
 3. `CHANGELOG.md` updated, git tag created
 4. Package built and published to PyPI
 
@@ -95,10 +99,11 @@ Version tracked in: `pyproject.toml`, `README.md` (pre-commit hook ref).
 
 ## Common Gotchas
 
-1. **Absolute paths**: `/file.md` is NOT treated as root unless `--allow-absolute` is set — it searches up the
-   directory tree from the origin file.
+1. **Absolute paths**: `/file.md` is NOT treated as root unless `--allow-absolute` is set — it
+   searches up the directory tree from the origin file.
 2. **Windows backslash**: `\file.md` is treated as relative (leading backslash removed).
-3. **Code block filtering**: References inside ` ```...``` ` or `` `...` `` are intentionally ignored.
+3. **Code block filtering**: References inside ` ```...``` ` or `` `...` `` are intentionally
+   ignored.
 4. **Remote checks**: Default OFF — must use `--check-remote` flag.
 5. **Settings in tests**: Settings object returns empty defaults when pytest is running.
 

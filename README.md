@@ -5,8 +5,9 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-silver.svg)](https://opensource.org/licenses/MIT)
 [![CI/CD](https://github.com/flumi3/markdown-refcheck/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/flumi3/markdown-refcheck/actions/workflows/ci-cd.yml)
 
-Markdown RefCheck is a simple tool that checks Markdown references to find any broken links. It helps keeping your
-documentation free from broken section refs, missing images and files, and unavailable website links.
+Markdown RefCheck is a simple tool that checks Markdown references to find any broken links. It
+helps keeping your documentation free from broken section refs, missing images and files, and
+unavailable website links.
 
 ## Features
 
@@ -15,7 +16,8 @@ documentation free from broken section refs, missing images and files, and unava
 - 💬 **Inline Ignore Comments** — Suppress false positives with
   [`<!-- refcheck-ignore -->`](docs/user-guide/Ignoring-References.md) directives
 - ⚙️ **CI/CD Ready** — Exit codes and `--no-color` for automation
-- 🚀 **Pre-commit Integration** — Available as a [pre-commit hook](docs/user-guide/Integration-Guide.md#pre-commit-hook)
+- 🚀 **Pre-commit Integration** — Available as a
+  [pre-commit hook](docs/user-guide/Integration-Guide.md#pre-commit-hook)
 
 ## Installation
 
@@ -71,13 +73,15 @@ For all CLI options, see the [CLI Reference](docs/user-guide/CLI-Reference.md).
       args: ["docs/", "--exclude", "docs/filetoexclude.md"]
 ```
 
-See the [Integration Guide](docs/user-guide/Integration-Guide.md) for CI/CD and other workflow setups.
+See the [Integration Guide](docs/user-guide/Integration-Guide.md) for CI/CD and other workflow
+setups.
 
 ## Documentation
 
 - [CLI Reference](docs/user-guide/CLI-Reference.md) — Command-line options
 - [Ignoring References](docs/user-guide/Ignoring-References.md) — Suppress false positives
-- [Integration Guide](docs/user-guide/Integration-Guide.md) — Pre-commit, CI/CD, Azure DevOps, Makefile
+- [Integration Guide](docs/user-guide/Integration-Guide.md) — Pre-commit, CI/CD, Azure DevOps,
+  Makefile
 - [Development Guide](docs/developer-guide/Development-Guide.md) — Architecture, setup, conventions
 
 ## Contributing

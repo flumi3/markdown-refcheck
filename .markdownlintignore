@@ -1,0 +1,6 @@
+node_modules/
+.venv/
+htmlcov/
+tests/fixtures/**
+tests/sample_markdown.md
+CHANGELOG.md
