@@ -498,3 +498,279 @@ class TestReferenceDataClass:
         )
         str_repr = str(ref)
         assert "Remote" in str_repr
+
+
+class TestRefcheckIgnore:
+    """Tests for refcheck-ignore comment directives."""
+
+    def test_standalone_ignore_skips_next_line(self, temp_markdown_file):
+        """A standalone <!-- refcheck-ignore --> skips the reference on the next line."""
+        content = """\
+[kept](kept.md)
+<!-- refcheck-ignore -->
+[ignored](ignored.md)
+[also_kept](also_kept.md)
+"""
+        file_path = temp_markdown_file(content)
+        parser = MarkdownParser()
+        result = parser.parse_markdown_file(file_path)
+
+        links = [r.link for r in result["basic_references"]]
+        assert links == ["kept.md", "also_kept.md"]
+
+    def test_inline_ignore_skips_same_line(self, temp_markdown_file):
+        """An inline <!-- refcheck-ignore --> skips the reference on the same line."""
+        content = """\
+[kept](kept.md)
+[ignored](ignored.md) <!-- refcheck-ignore -->
+[also_kept](also_kept.md)
+"""
+        file_path = temp_markdown_file(content)
+        parser = MarkdownParser()
+        result = parser.parse_markdown_file(file_path)
+
+        links = [r.link for r in result["basic_references"]]
+        assert links == ["kept.md", "also_kept.md"]
+
+    def test_block_ignore_skips_section(self, temp_markdown_file):
+        """References between start/end block directives are skipped."""
+        content = """\
+[kept_before](before.md)
+<!-- refcheck-ignore-start -->
+[ignored1](ignored1.md)
+[ignored2](ignored2.md)
+<!-- refcheck-ignore-end -->
+[kept_after](after.md)
+"""
+        file_path = temp_markdown_file(content)
+        parser = MarkdownParser()
+        result = parser.parse_markdown_file(file_path)
+
+        links = [r.link for r in result["basic_references"]]
+        assert links == ["before.md", "after.md"]
+
+    def test_block_ignore_skips_images(self, temp_markdown_file):
+        """Block ignore also skips image references."""
+        content = """\
+![kept](kept.png)
+<!-- refcheck-ignore-start -->
+![ignored](ignored.png)
+<!-- refcheck-ignore-end -->
+![also_kept](also_kept.png)
+"""
+        file_path = temp_markdown_file(content)
+        parser = MarkdownParser()
+        result = parser.parse_markdown_file(file_path)
+
+        links = [r.link for r in result["basic_images"]]
+        assert links == ["kept.png", "also_kept.png"]
+
+    def test_ignore_with_reason(self, temp_markdown_file):
+        """Ignore directives with an optional reason are supported."""
+        content = """\
+[kept](kept.md)
+<!-- refcheck-ignore: this is a known false positive -->
+[ignored](ignored.md)
+[also_kept](also_kept.md)
+"""
+        file_path = temp_markdown_file(content)
+        parser = MarkdownParser()
+        result = parser.parse_markdown_file(file_path)
+
+        links = [r.link for r in result["basic_references"]]
+        assert links == ["kept.md", "also_kept.md"]
+
+    def test_triple_dash_syntax(self, temp_markdown_file):
+        """<!--- refcheck-ignore --> with triple-dash is supported."""
+        content = """\
+[kept](kept.md)
+<!--- refcheck-ignore -->
+[ignored](ignored.md)
+[also_kept](also_kept.md)
+"""
+        file_path = temp_markdown_file(content)
+        parser = MarkdownParser()
+        result = parser.parse_markdown_file(file_path)
+
+        links = [r.link for r in result["basic_references"]]
+        assert links == ["kept.md", "also_kept.md"]
+
+    def test_triple_dash_block_with_reason(self, temp_markdown_file):
+        """<!--- refcheck-ignore-start: reason --> with triple-dash and reason."""
+        content = """\
+[kept](kept.md)
+<!--- refcheck-ignore-start: entire section is false positives -->
+[ignored1](ignored1.md)
+[ignored2](ignored2.md)
+<!--- refcheck-ignore-end -->
+[also_kept](also_kept.md)
+"""
+        file_path = temp_markdown_file(content)
+        parser = MarkdownParser()
+        result = parser.parse_markdown_file(file_path)
+
+        links = [r.link for r in result["basic_references"]]
+        assert links == ["kept.md", "also_kept.md"]
+
+    def test_ignore_inside_code_block_not_honored(self, temp_markdown_file):
+        """Ignore directives inside code blocks should NOT be honored."""
+        content = """\
+```markdown
+<!-- refcheck-ignore -->
+[in_code_block](fake.md)
+```
+[real_link](real.md)
+"""
+        file_path = temp_markdown_file(content)
+        parser = MarkdownParser()
+        result = parser.parse_markdown_file(file_path)
+
+        links = [r.link for r in result["basic_references"]]
+        assert links == ["real.md"]
+
+    def test_unmatched_block_start_ignores_to_eof(self, temp_markdown_file):
+        """An unmatched refcheck-ignore-start ignores references to end of file."""
+        content = """\
+[kept](kept.md)
+<!-- refcheck-ignore-start -->
+[ignored1](ignored1.md)
+[ignored2](ignored2.md)
+"""
+        file_path = temp_markdown_file(content)
+        parser = MarkdownParser()
+        result = parser.parse_markdown_file(file_path)
+
+        links = [r.link for r in result["basic_references"]]
+        assert links == ["kept.md"]
+
+    def test_multiple_ignore_comments(self, temp_markdown_file):
+        """Multiple ignore comments in a single file work independently."""
+        content = """\
+[kept1](kept1.md)
+<!-- refcheck-ignore -->
+[ignored1](ignored1.md)
+[kept2](kept2.md)
+<!-- refcheck-ignore -->
+[ignored2](ignored2.md)
+[kept3](kept3.md)
+"""
+        file_path = temp_markdown_file(content)
+        parser = MarkdownParser()
+        result = parser.parse_markdown_file(file_path)
+
+        links = [r.link for r in result["basic_references"]]
+        assert links == ["kept1.md", "kept2.md", "kept3.md"]
+
+    def test_no_over_suppression(self, temp_markdown_file):
+        """Inline ignore on line N does not suppress line N+1."""
+        content = """\
+[ref1](ref1.md) <!-- refcheck-ignore -->
+[ref2](ref2.md)
+"""
+        file_path = temp_markdown_file(content)
+        parser = MarkdownParser()
+        result = parser.parse_markdown_file(file_path)
+
+        links = [r.link for r in result["basic_references"]]
+        assert links == ["ref2.md"]
+
+    def test_fixture_single_line_ignore(self):
+        """Test with the single_line_ignore.md fixture file."""
+        fixture_path = os.path.join(
+            os.path.dirname(__file__), "fixtures", "ignore_comments", "single_line_ignore.md"
+        )
+        parser = MarkdownParser()
+        result = parser.parse_markdown_file(fixture_path)
+
+        links = [r.link for r in result["basic_references"]]
+        assert "kept.md" in links
+        assert "also_kept.md" in links
+        assert "ignored.md" not in links
+
+    def test_fixture_inline_ignore(self):
+        """Test with the inline_ignore.md fixture file."""
+        fixture_path = os.path.join(
+            os.path.dirname(__file__), "fixtures", "ignore_comments", "inline_ignore.md"
+        )
+        parser = MarkdownParser()
+        result = parser.parse_markdown_file(fixture_path)
+
+        links = [r.link for r in result["basic_references"]]
+        assert "kept.md" in links
+        assert "also_kept.md" in links
+        assert "ignored.md" not in links
+
+    def test_fixture_block_ignore(self):
+        """Test with the block_ignore.md fixture file."""
+        fixture_path = os.path.join(
+            os.path.dirname(__file__), "fixtures", "ignore_comments", "block_ignore.md"
+        )
+        parser = MarkdownParser()
+        result = parser.parse_markdown_file(fixture_path)
+
+        links = [r.link for r in result["basic_references"]]
+        assert "before.md" in links
+        assert "after.md" in links
+        assert "ignored1.md" not in links
+        assert "ignored2.md" not in links
+
+        img_links = [r.link for r in result["basic_images"]]
+        assert "ignored.png" not in img_links
+
+    def test_fixture_ignore_in_code_block(self):
+        """Test with the ignore_in_code_block.md fixture file."""
+        fixture_path = os.path.join(
+            os.path.dirname(__file__), "fixtures", "ignore_comments", "ignore_in_code_block.md"
+        )
+        parser = MarkdownParser()
+        result = parser.parse_markdown_file(fixture_path)
+
+        links = [r.link for r in result["basic_references"]]
+        assert links == ["real.md"]
+
+    def test_fixture_ignore_with_reason(self):
+        """Test with the ignore_with_reason.md fixture file."""
+        fixture_path = os.path.join(
+            os.path.dirname(__file__), "fixtures", "ignore_comments", "ignore_with_reason.md"
+        )
+        parser = MarkdownParser()
+        result = parser.parse_markdown_file(fixture_path)
+
+        links = [r.link for r in result["basic_references"]]
+        assert "kept.md" in links
+        assert "also_kept.md" in links
+        assert "ignored.md" not in links
+        assert "ignored1.md" not in links
+        assert "ignored2.md" not in links
+
+    def test_block_end_with_reason(self, temp_markdown_file):
+        """Block end directive with an optional reason is recognized."""
+        content = """\
+[kept](kept.md)
+<!-- refcheck-ignore-start: reason -->
+[ignored](ignored.md)
+<!-- refcheck-ignore-end: done -->
+[also_kept](also_kept.md)
+"""
+        file_path = temp_markdown_file(content)
+        parser = MarkdownParser()
+        result = parser.parse_markdown_file(file_path)
+
+        links = [r.link for r in result["basic_references"]]
+        assert links == ["kept.md", "also_kept.md"]
+
+    def test_block_markers_do_not_suppress_own_lines(self, temp_markdown_file):
+        """References on start/end marker lines are not suppressed."""
+        content = """\
+[before](before.md) <!-- refcheck-ignore-start -->
+[ignored](ignored.md)
+<!-- refcheck-ignore-end --> [after](after.md)
+"""
+        file_path = temp_markdown_file(content)
+        parser = MarkdownParser()
+        result = parser.parse_markdown_file(file_path)
+
+        links = [r.link for r in result["basic_references"]]
+        assert "before.md" in links
+        assert "after.md" in links
+        assert "ignored.md" not in links

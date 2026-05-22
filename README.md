@@ -6,7 +6,8 @@
 [![CI/CD](https://github.com/flumi3/markdown-refcheck/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/flumi3/markdown-refcheck/actions/workflows/ci-cd.yml)
 
 Markdown RefCheck is a simple tool that checks Markdown references to find any broken links.  
-It helps keeping your documentation free from broken section refs, missing images and files, and unavailable websites links.
+It helps keeping your documentation free from broken section refs, missing images and files, and unavailable websites
+links.
 
 ```text
 usage: refcheck [OPTIONS] [PATH ...]
@@ -27,13 +28,14 @@ options:
 
 ## Features
 
-- 🔍 **Reference Detection** - Find and validate various reference patterns in Markdown files
+- 🔍 **Reference Detection** - Validate various reference patterns in Markdown files
 - ❌ **Broken Link Highlighting** - Quickly identify broken references with clear error messages
 - 🌐 **Remote URL Checking** - Validate external HTTP/HTTPS links (optional with `--check-remote`)
 - 🛠️ **User-Friendly CLI** - Simple and intuitive command-line interface
 - 🎨 **Colored Output** - Clear, color-coded results for easy scanning (disable with `--no-color`)
 - ⚙️ **CI/CD Ready** - Perfect for automated quality checks in your documentation workflows
-- 🚀 **Pre-commit Integration** - Available as a pre-commit hook for automated validation
+- 🚀 **Pre-commit Integration** - Available as a pre-commit hook
+- 💬 **Inline Ignore Comments** - Suppress false positives with [`<!-- refcheck-ignore -->`](docs/Ignoring-References.md) directives
 
 ## Installation
 
@@ -115,5 +117,6 @@ Please see [CONTRIBUTING.md](CONTRIBUTING.md) before opening pull requests.
 For more detailed information, check out the documentation:
 
 - [CLI Reference](docs/CLI-Reference.md) - Complete command-line options and usage
+- [Ignoring References](docs/Ignoring-References.md) - Suppress false positives with inline comments
 - [Integration Guide](docs/Integration-Guide.md) - CI/CD and workflow integration
 - [Examples](docs/Examples.md) - Real-world usage examples

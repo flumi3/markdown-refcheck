@@ -9,6 +9,12 @@ CODE_BLOCK_PATTERN = re.compile(r"```(?P<content>[\s\S]*?)```")
 INLINE_CODE_PATTERN = re.compile(r"`(?P<content>[^`\n]+)`")
 HTML_COMMENT_PATTERN = re.compile(r"<!--(?P<content>[\s\S]*?)-->")
 
+# Refcheck ignore directives — support both <!-- and <!--- (2 or 3 dashes)
+REFCHECK_IGNORE_PATTERN = re.compile(r"<!---?\s*refcheck-ignore\s*(?::.*?)?\s*-->")
+REFCHECK_IGNORE_START_PATTERN = re.compile(r"<!---?\s*refcheck-ignore-start\s*(?::.*?)?\s*-->")
+REFCHECK_IGNORE_END_PATTERN = re.compile(r"<!---?\s*refcheck-ignore-end\s*(?::.*?)?\s*-->")
+
+
 # Basic Markdown references
 BASIC_REFERENCE_PATTERN = re.compile(r"!*\[(?P<text>[^\]]+)\]\((?P<link>[^)]+)\)")  # []() and ![]()
 BASIC_IMAGE_PATTERN = re.compile(r"!\[(?P<text>[^(){}\[\]]+)\]\((?P<link>[^(){}\[\]]+)\)")  # ![]()
@@ -107,6 +113,12 @@ class MarkdownParser:
         # Combine code blocks, inline code, and HTML comments for filtering
         all_code = code_blocks + inline_code + html_comments
 
+        # Determine which lines should be ignored via refcheck-ignore directives.
+        # Only filter against code blocks and inline code (not HTML comments), since
+        # refcheck-ignore directives are themselves HTML comments.
+        logger.info("Checking for refcheck-ignore directives ...")
+        ignored_lines = self._get_ignored_lines(content, code_blocks + inline_code)
+
         # Get all references that look like this: [text](reference)
         logger.info("Extracting basic references ...")
         basic_reference_matches = self._find_matches_with_line_numbers(
@@ -120,6 +132,9 @@ class MarkdownParser:
             logger.info(ref_match.__repr__())
 
         basic_reference_matches = self._drop_code_references(basic_reference_matches, all_code)
+        basic_reference_matches = self._drop_ignored_references(
+            basic_reference_matches, ignored_lines
+        )
         logger.info("Processing reference matches...")
         basic_references = self._process_basic_references(file_path, basic_reference_matches)
 
@@ -128,12 +143,14 @@ class MarkdownParser:
         basic_image_matches = self._find_matches_with_line_numbers(BASIC_IMAGE_PATTERN, content)
         logger.info(f"Found {len(basic_image_matches)} basic images.")
         basic_image_matches = self._drop_code_references(basic_image_matches, all_code)
+        basic_image_matches = self._drop_ignored_references(basic_image_matches, ignored_lines)
         basic_images = self._process_basic_references(file_path, basic_image_matches)
 
         logger.info("Extracting inline links ...")
         inline_link_matches = self._find_matches_with_line_numbers(INLINE_LINK_PATTERN, content)
         logger.info(f"Found {len(inline_link_matches)} inline links.")
         inline_link_matches = self._drop_code_references(inline_link_matches, all_code)
+        inline_link_matches = self._drop_ignored_references(inline_link_matches, ignored_lines)
         inline_links = self._process_basic_references(file_path, inline_link_matches)
 
         return {
@@ -223,6 +240,100 @@ class MarkdownParser:
             )
             references.append(reference)
         return references
+
+    def _get_ignored_lines(self, content: str, code_sections: list[ReferenceMatch]) -> set[int]:
+        """Determine which lines should be ignored based on refcheck-ignore directives.
+
+        Supports:
+        - Single-line: ``<!-- refcheck-ignore -->`` (standalone → next line, inline → same line)
+        - Block: ``<!-- refcheck-ignore-start -->`` ... ``<!-- refcheck-ignore-end -->``
+        """
+        ignored_lines: set[int] = set()
+
+        # --- Single-line ignore directives ---
+        ignore_matches = self._find_matches_with_line_numbers(REFCHECK_IGNORE_PATTERN, content)
+        # Exclude single-line directives that also match the start/end patterns
+        ignore_matches = [
+            m
+            for m in ignore_matches
+            if not REFCHECK_IGNORE_START_PATTERN.match(m.match.group(0))
+            and not REFCHECK_IGNORE_END_PATTERN.match(m.match.group(0))
+        ]
+        ignore_matches = self._drop_code_references(ignore_matches, code_sections)
+
+        for m in ignore_matches:
+            if self._is_standalone_comment(m.match, content):
+                ignored_lines.add(m.line_number + 1)
+            else:
+                ignored_lines.add(m.line_number)
+
+        # --- Block ignore directives ---
+        start_matches = self._find_matches_with_line_numbers(REFCHECK_IGNORE_START_PATTERN, content)
+        start_matches = self._drop_code_references(start_matches, code_sections)
+
+        end_matches = self._find_matches_with_line_numbers(REFCHECK_IGNORE_END_PATTERN, content)
+        end_matches = self._drop_code_references(end_matches, code_sections)
+
+        total_lines = content.count("\n") + 1
+
+        for start in start_matches:
+            # Find the first end directive that comes after this start directive
+            matching_end = None
+            for end in end_matches:
+                if end.line_number > start.line_number:
+                    matching_end = end
+                    break
+
+            if matching_end:
+                for line in range(start.line_number + 1, matching_end.line_number):
+                    ignored_lines.add(line)
+            else:
+                logger.warning(
+                    f"Unmatched refcheck-ignore-start at line {start.line_number}, "
+                    f"ignoring references until end of file."
+                )
+                for line in range(start.line_number + 1, total_lines + 1):
+                    ignored_lines.add(line)
+
+        if ignored_lines:
+            logger.info(f"Ignoring references on lines: {sorted(ignored_lines)}")
+
+        return ignored_lines
+
+    def _is_standalone_comment(self, match: Match, content: str) -> bool:
+        """Check if a comment is the only non-whitespace content on its line."""
+        # Find the start of the line containing this match
+        line_start = content.rfind("\n", 0, match.start(0)) + 1
+        # Find the end of the line containing this match
+        line_end = content.find("\n", match.end(0))
+        if line_end == -1:
+            line_end = len(content)
+
+        before = content[line_start : match.start(0)]
+        after = content[match.end(0) : line_end]
+        return before.strip() == "" and after.strip() == ""
+
+    def _drop_ignored_references(
+        self, references: list[ReferenceMatch], ignored_lines: set[int]
+    ) -> list[ReferenceMatch]:
+        """Drop references that are on ignored lines."""
+        if not ignored_lines:
+            return references
+
+        filtered = []
+        dropped_counter = 0
+
+        for ref in references:
+            if ref.line_number in ignored_lines:
+                logger.info(f"Dropping ignored reference: {ref.match.group(0)}")
+                dropped_counter += 1
+            else:
+                filtered.append(ref)
+
+        if dropped_counter > 0:
+            logger.info(f"Dropped {dropped_counter} ignored references.")
+
+        return filtered
 
     def _find_matches_with_line_numbers(
         self, pattern: Pattern[str], text: str
