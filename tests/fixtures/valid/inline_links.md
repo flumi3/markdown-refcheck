@@ -10,9 +10,9 @@ HTTP link: <http://example.org>
 
 ## Email Links
 
-Contact: <user@example.com>
+Explicit mailto: <mailto:support@example.com>
 
-Support: <mailto:support@example.com>
+Bare emails like <user@example.com> are valid Markdown but not validated as references.
 
 ## Mixed Content
 
