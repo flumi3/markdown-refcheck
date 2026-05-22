@@ -14,7 +14,7 @@ BASIC_REFERENCE_PATTERN = re.compile(r"!*\[(?P<text>[^\]]+)\]\((?P<link>[^)]+)\)
 BASIC_IMAGE_PATTERN = re.compile(r"!\[(?P<text>[^(){}\[\]]+)\]\((?P<link>[^(){}\[\]]+)\)")  # ![]()
 
 # Inline Links - <http://example.com>
-INLINE_LINK_PATTERN = re.compile(r"<(?P<link>(?:https?://|mailto:|[a-zA-Z0-9._%+-]+@)[^>]+)>")
+INLINE_LINK_PATTERN = re.compile(r"<(?P<link>(?:https?://|mailto:)[^>]+)>")
 
 RAW_LINK_PATTERN = re.compile(
     r"(^| )(?:(https?://\S+))"

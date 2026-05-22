@@ -53,9 +53,24 @@ Email: <user@example.com>
         result = parser.parse_markdown_file(file_path)
 
         inline_links = result["inline_links"]
-        assert len(inline_links) == 2
+        assert len(inline_links) == 1
         assert inline_links[0].link == "https://example.com"
-        assert inline_links[1].link == "user@example.com"
+
+    def test_parse_markdown_file_inline_links_ignores_bare_emails(self, temp_markdown_file):
+        """Test that bare emails in angle brackets are not matched as inline links."""
+        content = """# Test
+Contact <user@example.com> for help.
+Or use <mailto:user@example.com> instead.
+Visit <https://example.com> for more.
+"""
+        file_path = temp_markdown_file(content)
+        parser = MarkdownParser()
+        result = parser.parse_markdown_file(file_path)
+
+        inline_links = result["inline_links"]
+        assert len(inline_links) == 2
+        assert inline_links[0].link == "mailto:user@example.com"
+        assert inline_links[1].link == "https://example.com"
 
     def test_parse_markdown_file_code_block_filtering(self, temp_markdown_file):
         """Test that references inside code blocks are ignored."""
