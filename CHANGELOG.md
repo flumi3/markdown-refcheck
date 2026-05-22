@@ -1,6 +1,144 @@
 # CHANGELOG
 
 
+## v0.4.5 (2026-05-22)
+
+### Bug Fixes
+
+- Exclude bare emails from broken reference detection (#108) (#109)
+  ([#110](https://github.com/flumi3/markdown-refcheck/pull/110),
+  [`960424e`](https://github.com/flumi3/markdown-refcheck/commit/960424eecb8e6573763edfa26144e9bb15e9b3c6))
+
+* chore(deps): bump pytest in the pip group across 1 directory (#105)
+
+Bumps the pip group with 1 update in the / directory:
+  [pytest](https://github.com/pytest-dev/pytest).
+
+Updates `pytest` from 8.4.2 to 9.0.3 - [Release
+  notes](https://github.com/pytest-dev/pytest/releases) -
+  [Changelog](https://github.com/pytest-dev/pytest/blob/main/CHANGELOG.rst) -
+  [Commits](https://github.com/pytest-dev/pytest/compare/8.4.2...9.0.3)
+
+--- updated-dependencies: - dependency-name: pytest dependency-version: 9.0.3
+
+dependency-type: direct:development
+
+dependency-group: pip ...
+
+* chore(deps): bump urllib3 in the pip group across 1 directory (#106)
+
+Bumps the pip group with 1 update in the / directory: [urllib3](https://github.com/urllib3/urllib3).
+
+Updates `urllib3` from 2.6.3 to 2.7.0 - [Release notes](https://github.com/urllib3/urllib3/releases)
+  - [Changelog](https://github.com/urllib3/urllib3/blob/main/CHANGES.rst) -
+  [Commits](https://github.com/urllib3/urllib3/compare/2.6.3...2.7.0)
+
+--- updated-dependencies: - dependency-name: urllib3 dependency-version: 2.7.0
+
+dependency-type: indirect
+
+* chore(deps): bump idna in the pip group across 1 directory (#107)
+
+Bumps the pip group with 1 update in the / directory: [idna](https://github.com/kjd/idna).
+
+Updates `idna` from 3.10 to 3.15 - [Release notes](https://github.com/kjd/idna/releases) -
+  [Changelog](https://github.com/kjd/idna/blob/master/HISTORY.md) -
+  [Commits](https://github.com/kjd/idna/compare/v3.10...v3.15)
+
+--- updated-dependencies: - dependency-name: idna dependency-version: '3.15'
+
+* fix(parsers): exclude bare emails from inline link detection
+
+Bare email addresses in angle brackets (e.g. <user@example.com>) were matched by INLINE_LINK_PATTERN
+  and flagged as broken local references. Remove the email-matching alternative from the regex so
+  only URLs (http://, https://) and explicit mailto: links are matched.
+
+Closes #108
+
+* chore(tests): update inline links fixture for email handling
+
+Update the fixture to reflect that bare emails in angle brackets are not validated as references by
+  refcheck.
+
+* fix(ci): analyze PR commits for version preview
+
+The version preview workflow was using semantic-release which only analyzes commits on the
+  configured release branch (main). In a PR context this meant it never detected version bumps.
+
+Replace with direct commit message analysis of origin/main..HEAD to correctly preview the version
+  bump that would occur after merge.
+
+---------
+
+Signed-off-by: dependabot[bot] <support@github.com>
+
+Co-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+
+### Chores
+
+- **deps**: Bump idna in the pip group across 1 directory
+  ([#107](https://github.com/flumi3/markdown-refcheck/pull/107),
+  [`2ccfa70`](https://github.com/flumi3/markdown-refcheck/commit/2ccfa70199722ae1e692d9bb968985768ebcc893))
+
+Bumps the pip group with 1 update in the / directory: [idna](https://github.com/kjd/idna).
+
+Updates `idna` from 3.10 to 3.15 - [Release notes](https://github.com/kjd/idna/releases) -
+  [Changelog](https://github.com/kjd/idna/blob/master/HISTORY.md) -
+  [Commits](https://github.com/kjd/idna/compare/v3.10...v3.15)
+
+--- updated-dependencies: - dependency-name: idna dependency-version: '3.15'
+
+dependency-type: indirect
+
+dependency-group: pip ...
+
+Signed-off-by: dependabot[bot] <support@github.com>
+
+Co-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+
+- **deps**: Bump pytest in the pip group across 1 directory
+  ([#105](https://github.com/flumi3/markdown-refcheck/pull/105),
+  [`070c305`](https://github.com/flumi3/markdown-refcheck/commit/070c305f6039dd8dbcbe702421cf4c7649ecde8c))
+
+Bumps the pip group with 1 update in the / directory:
+  [pytest](https://github.com/pytest-dev/pytest).
+
+Updates `pytest` from 8.4.2 to 9.0.3 - [Release
+  notes](https://github.com/pytest-dev/pytest/releases) -
+  [Changelog](https://github.com/pytest-dev/pytest/blob/main/CHANGELOG.rst) -
+  [Commits](https://github.com/pytest-dev/pytest/compare/8.4.2...9.0.3)
+
+--- updated-dependencies: - dependency-name: pytest dependency-version: 9.0.3
+
+dependency-type: direct:development
+
+dependency-group: pip ...
+
+Signed-off-by: dependabot[bot] <support@github.com>
+
+Co-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+
+- **deps**: Bump urllib3 in the pip group across 1 directory
+  ([#106](https://github.com/flumi3/markdown-refcheck/pull/106),
+  [`78f7c7f`](https://github.com/flumi3/markdown-refcheck/commit/78f7c7f622d50c58b963577d01582944b63e707f))
+
+Bumps the pip group with 1 update in the / directory: [urllib3](https://github.com/urllib3/urllib3).
+
+Updates `urllib3` from 2.6.3 to 2.7.0 - [Release notes](https://github.com/urllib3/urllib3/releases)
+  - [Changelog](https://github.com/urllib3/urllib3/blob/main/CHANGES.rst) -
+  [Commits](https://github.com/urllib3/urllib3/compare/2.6.3...2.7.0)
+
+--- updated-dependencies: - dependency-name: urllib3 dependency-version: 2.7.0
+
+dependency-type: indirect
+
+dependency-group: pip ...
+
+Signed-off-by: dependabot[bot] <support@github.com>
+
+Co-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+
+
 ## v0.4.4 (2026-04-09)
 
 ### Bug Fixes
