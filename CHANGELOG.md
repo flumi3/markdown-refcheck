@@ -1,6 +1,57 @@
 # CHANGELOG
 
 
+## v0.5.0 (2026-05-22)
+
+### Features
+
+- Add inline ignore comments for line/section skipping (#103)
+  ([#111](https://github.com/flumi3/markdown-refcheck/pull/111),
+  [`d9d9b8d`](https://github.com/flumi3/markdown-refcheck/commit/d9d9b8d73245623f0428e8ad5402b520efad890b))
+
+* feat(parsers): add refcheck-ignore comment directives for line/section skipping
+
+Add support for inline markdown comments to skip reference checking: - <!-- refcheck-ignore --> on
+  standalone line: skips next line - <!-- refcheck-ignore --> inline with content: skips that line -
+  <!-- refcheck-ignore-start --> / <!-- refcheck-ignore-end -->: skips block - All directives
+  support optional reason text - Both <!-- and <!--- syntax supported - Directives inside code
+  blocks are not honored
+
+Implements #103
+
+* test(parsers): add comprehensive tests for refcheck-ignore directives
+
+Add TestRefcheckIgnore class with 16 tests covering: - Standalone ignore (next-line), inline ignore
+  (same-line) - Block ignore with start/end directives - Image and inline link filtering - Optional
+  reason text, triple-dash syntax - Ignore directives inside code blocks (not honored) - Unmatched
+  block start (ignore to EOF) - Multiple ignore comments, no over-suppression - Fixture file tests
+  for all scenarios
+
+Also fix _get_ignored_lines to filter against code blocks and inline code only (not HTML comments),
+  since ignore directives are themselves HTML comments.
+
+* docs(readme): add ignore comments documentation
+
+Document the three refcheck-ignore modes: - Standalone: skip next line - Inline: skip same line -
+  Block: skip entire section - Optional reason text syntax - Note about triple-dash and code block
+  behavior
+
+* style(parsers): apply ruff formatting
+
+* fix(parsers): address review findings for ignore directives
+
+- Add optional reason support to refcheck-ignore-end pattern - Make block suppression exclusive of
+  start/end marker lines (only lines between markers are suppressed) - Add regression tests for
+  end-with-reason and boundary lines - Update README to mention inline code exclusion and standalone
+  marker requirement
+
+* docs: move ignore reference docs from README to docs/Ignoring-References.md
+
+- Create dedicated docs/Ignoring-References.md with full documentation - Keep only a feature bullet
+  + link in README - Add to documentation listing in README - Fix fixture files that had
+  formatter-injected blank lines
+
+
 ## v0.4.5 (2026-05-22)
 
 ### Bug Fixes
