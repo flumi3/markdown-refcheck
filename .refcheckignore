@@ -1,0 +1,7 @@
+.github/
+.venv/
+.pytest_cache/
+node_modules/
+htmlcov/
+tests/fixtures/
+tests/sample_markdown.md

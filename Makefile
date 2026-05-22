@@ -41,6 +41,8 @@ help: ## Display this help message
 init: ## Initialize the development environment for all modules
 	@echo "$(COLOR_BLUE_BG)$(COLOR_BOLD) ➜ Initializing Core Environment $(COLOR_RESET)"
 	@poetry sync
+	@echo "$(COLOR_BLUE_BG)$(COLOR_BOLD) ➜ Installing docs QA tooling $(COLOR_RESET)"
+	@npm install
 	@echo "$(COLOR_BLUE_BG)$(COLOR_BOLD) ➜ Installing pre-commit hooks $(COLOR_RESET)"
 	@poetry run pre-commit install --hook-type commit-msg --hook-type pre-push
 	@echo "$(COLOR_GREEN) ✔ Done$(COLOR_RESET)"
@@ -94,6 +96,44 @@ qa: format lint check-types check-dead-code check-unused-deps ## Run all quality
 
 .PHONY: ci-qa
 ci-qa: format-check lint-check check-types check-dead-code check-unused-deps ## Run all quality assurance checks for CI (non-modifying)
+
+# --- Docs QA ---
+
+.PHONY: docs-format
+docs-format: ## Format Markdown files with Prettier
+	@echo "$(COLOR_BLUE_BG)$(COLOR_BOLD) ➜ Formatting Markdown with Prettier $(COLOR_RESET)"
+	@npx prettier --write "**/*.md"
+	@echo "$(COLOR_GREEN) ✔ Done$(COLOR_RESET)"
+
+.PHONY: docs-format-check
+docs-format-check: ## Check Markdown formatting without modifying files
+	@echo "$(COLOR_BLUE_BG)$(COLOR_BOLD) ➜ Checking Markdown formatting with Prettier $(COLOR_RESET)"
+	@npx prettier --check "**/*.md"
+	@echo "$(COLOR_GREEN) ✔ Done$(COLOR_RESET)"
+
+.PHONY: docs-lint
+docs-lint: ## Lint Markdown files with markdownlint
+	@echo "$(COLOR_BLUE_BG)$(COLOR_BOLD) ➜ Linting Markdown with markdownlint $(COLOR_RESET)"
+	@npx markdownlint --fix "**/*.md"
+	@echo "$(COLOR_GREEN) ✔ Done$(COLOR_RESET)"
+
+.PHONY: docs-lint-check
+docs-lint-check: ## Check Markdown linting without modifying files
+	@echo "$(COLOR_BLUE_BG)$(COLOR_BOLD) ➜ Checking Markdown linting with markdownlint $(COLOR_RESET)"
+	@npx markdownlint "**/*.md"
+	@echo "$(COLOR_GREEN) ✔ Done$(COLOR_RESET)"
+
+.PHONY: docs-refcheck
+docs-refcheck: ## Check for broken references in Markdown files
+	@echo "$(COLOR_BLUE_BG)$(COLOR_BOLD) ➜ Checking references with refcheck $(COLOR_RESET)"
+	@poetry run refcheck .
+	@echo "$(COLOR_GREEN) ✔ Done$(COLOR_RESET)"
+
+.PHONY: docs-qa
+docs-qa: docs-format docs-lint docs-refcheck ## Run all docs QA checks (auto-fix)
+
+.PHONY: docs-qa-check
+docs-qa-check: docs-format-check docs-lint-check docs-refcheck ## Run all docs QA checks for CI (non-modifying)
 
 # --- Tests ---
 

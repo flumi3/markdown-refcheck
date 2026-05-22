@@ -7,8 +7,8 @@ For detailed setup instructions, architecture, and conventions, see the
 
 ## Reporting Bugs
 
-Create an issue with: steps to reproduce, expected vs. actual behavior, your environment (OS, Python version, RefCheck
-version), and sample Markdown files if applicable.
+Create an issue with: steps to reproduce, expected vs. actual behavior, your environment (OS, Python
+version, RefCheck version), and sample Markdown files if applicable.
 
 ## Suggesting Features
 
@@ -16,8 +16,10 @@ Check existing issues first, then describe the feature, its benefits, and usage 
 
 ## Pull Request Workflow
 
-1. Fork the repo and create a branch from `main` (e.g., `feat/add-json-output`, `fix/handle-empty-files`)
-2. Set up the dev environment: `make init` (see [Development Guide](docs/developer-guide/Development-Guide.md#setup))
+1. Fork the repo and create a branch from `main` (e.g., `feat/add-json-output`,
+   `fix/handle-empty-files`)
+2. Set up the dev environment: `make init` (see
+   [Development Guide](docs/developer-guide/Development-Guide.md#setup))
 3. Make your changes and add tests for new functionality
 4. Run `make qa` and `make test` — all checks must pass
 5. Commit using [conventional commits](#commit-convention)
@@ -25,8 +27,8 @@ Check existing issues first, then describe the feature, its benefits, and usage 
 
 ## Commit Convention
 
-This project uses [Conventional Commits](https://www.conventionalcommits.org/) for automated versioning and changelog
-generation. Pre-commit hooks enforce the format.
+This project uses [Conventional Commits](https://www.conventionalcommits.org/) for automated
+versioning and changelog generation. Pre-commit hooks enforce the format.
 
 ```text
 <type>(<scope>): <description>
@@ -34,14 +36,15 @@ generation. Pre-commit hooks enforce the format.
 
 **Types that trigger releases:**
 
-| Type | Release |
-|------|---------|
-| `feat:` | Minor (0.1.0 → 0.2.0) |
-| `fix:` | Patch (0.1.0 → 0.1.1) |
-| `perf:` | Patch |
+| Type                     | Release               |
+| ------------------------ | --------------------- |
+| `feat:`                  | Minor (0.1.0 → 0.2.0) |
+| `fix:`                   | Patch (0.1.0 → 0.1.1) |
+| `perf:`                  | Patch                 |
 | `BREAKING CHANGE:` / `!` | Major (0.1.0 → 1.0.0) |
 
-**Types that don't trigger releases:** `docs:`, `chore:`, `ci:`, `style:`, `refactor:`, `test:`, `build:`
+**Types that don't trigger releases:** `docs:`, `chore:`, `ci:`, `style:`, `refactor:`, `test:`,
+`build:`
 
 **Examples:**
 

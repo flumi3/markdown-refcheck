@@ -131,9 +131,9 @@ steps:
 ```makefile
 .PHONY: check-docs
 check-docs:
-	@refcheck docs/ README.md --no-color
+ @refcheck docs/ README.md --no-color
 
 .PHONY: check-docs-full
 check-docs-full:
-	@refcheck docs/ README.md --check-remote --no-color
+ @refcheck docs/ README.md --check-remote --no-color
 ```

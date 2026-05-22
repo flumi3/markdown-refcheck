@@ -1,0 +1,9 @@
+{
+  "name": "refcheck-docs",
+  "private": true,
+  "description": "Docs QA tooling for refcheck",
+  "devDependencies": {
+    "markdownlint-cli": "0.48.0",
+    "prettier": "3.8.1"
+  }
+}
