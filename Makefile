@@ -102,13 +102,13 @@ ci-qa: format-check lint-check check-types check-dead-code check-unused-deps ## 
 .PHONY: docs-format
 docs-format: ## Format Markdown files with Prettier
 	@echo "$(COLOR_BLUE_BG)$(COLOR_BOLD) ➜ Formatting Markdown with Prettier $(COLOR_RESET)"
-	@npx prettier --write "**/*.md"
+	@npx prettier --write "**/*.md" --log-level warn
 	@echo "$(COLOR_GREEN) ✔ Done$(COLOR_RESET)"
 
 .PHONY: docs-format-check
 docs-format-check: ## Check Markdown formatting without modifying files
 	@echo "$(COLOR_BLUE_BG)$(COLOR_BOLD) ➜ Checking Markdown formatting with Prettier $(COLOR_RESET)"
-	@npx prettier --check "**/*.md"
+	@npx prettier --check "**/*.md" --log-level warn
 	@echo "$(COLOR_GREEN) ✔ Done$(COLOR_RESET)"
 
 .PHONY: docs-lint
@@ -126,7 +126,7 @@ docs-lint-check: ## Check Markdown linting without modifying files
 .PHONY: docs-refcheck
 docs-refcheck: ## Check for broken references in Markdown files
 	@echo "$(COLOR_BLUE_BG)$(COLOR_BOLD) ➜ Checking references with refcheck $(COLOR_RESET)"
-	@poetry run refcheck .
+	@poetry run refcheck . --quiet
 	@echo "$(COLOR_GREEN) ✔ Done$(COLOR_RESET)"
 
 .PHONY: docs-qa
