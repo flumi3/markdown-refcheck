@@ -20,6 +20,7 @@ refcheck [OPTIONS] [PATH ...]
 | `-nc`, `--no-color`     | Disable colored output. Useful for CI/CD or redirecting to files.                                             |
 | `-v`, `--verbose`       | Enable verbose logging (file parsing details, validation steps, HTTP info).                                   |
 | `--allow-absolute`      | Allow absolute path references like `/docs/file.md`. Without this flag, absolute paths are flagged as broken. |
+|  `-q`, `--quiet`        | Suppress all output except for broken reference details. Overrides other output options.                      |
 
 ## Exit Codes
 
