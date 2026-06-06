@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "refcheck"
-version = "0.5.0"
+version = "0.6.0"
 description = "Tool for finding broken references and links in Markdown files."
 authors = ["Sebastian Flum <sebastian.flum.dev@gmail.com>"]
 readme = "README.md"
@@ -102,6 +102,7 @@ exclude_lines = [
 
 [tool.coverage.html]
 directory = "htmlcov"
+
 
 
 

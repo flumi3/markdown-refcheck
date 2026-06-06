@@ -8,7 +8,7 @@ RefCheck is available as a [pre-commit](https://pre-commit.com/) hook:
 # .pre-commit-config.yaml
 repos:
   - repo: https://github.com/flumi3/refcheck
-    rev: v0.5.0
+    rev: v0.6.0
     hooks:
       - id: refcheck
         args: ["docs/", "README.md", "-e", "docs/archive/"]
