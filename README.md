@@ -67,7 +67,7 @@ For all CLI options, see the [CLI Reference](docs/user-guide/CLI-Reference.md).
 ```yaml
 # .pre-commit-config.yaml
 - repo: https://github.com/flumi3/refcheck
-  rev: v0.6.0
+  rev: v0.6.1
   hooks:
     - id: refcheck
       args: ["docs/", "--exclude", "docs/filetoexclude.md"]

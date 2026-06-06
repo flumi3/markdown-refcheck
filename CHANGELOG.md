@@ -1,6 +1,27 @@
 # CHANGELOG
 
 
+## v0.6.1 (2026-06-06)
+
+### Bug Fixes
+
+- Convert "unmatched references" from warning to info log
+  ([`6e49635`](https://github.com/flumi3/markdown-refcheck/commit/6e49635163ef0259f984b04bda3e12d5d0992a00))
+
+### Chores
+
+- **linting**: Add type annotations to include these funcs in linting and fix errors
+  ([`28283f2`](https://github.com/flumi3/markdown-refcheck/commit/28283f2c1090d1e7e6a30f5c32e16bc4a97da426))
+
+- **qa**: Use quiet output to cut tokens
+  ([`f7440c0`](https://github.com/flumi3/markdown-refcheck/commit/f7440c07a6225b9fb87fbc645b85ac9f6b3b5a80))
+
+### Documentation
+
+- Add --quiet -q flag to cli reference
+  ([`f82d1b0`](https://github.com/flumi3/markdown-refcheck/commit/f82d1b05d61b8d05981a1368b1511fbdbbc35b1c))
+
+
 ## v0.6.0 (2026-06-06)
 
 ### Chores
