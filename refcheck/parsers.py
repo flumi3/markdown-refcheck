@@ -288,7 +288,7 @@ class MarkdownParser:
                 for line in range(start.line_number + 1, matching_end.line_number):
                     ignored_lines.add(line)
             else:
-                logger.warning(
+                logger.info(
                     f"Unmatched refcheck-ignore-start at line {start.line_number}, "
                     f"ignoring references until end of file."
                 )
