@@ -13,6 +13,7 @@ from refcheck.utils import (
     print_red,
     print_green,
     print_yellow,
+    ui_print,
 )
 
 logger = logging.getLogger()
@@ -69,27 +70,52 @@ class ReferenceChecker:
                         self.broken_references.append(
                             BrokenReference(**ref.__dict__, status=status)
                         )
-            print(f"{ref.file_path}:{ref.line_number}: {ref.syntax} - {status}")
+            ui_print(f"{ref.file_path}:{ref.line_number}: {ref.syntax} - {status}")
 
     def print_summary(self):
-        print("\nReference check complete.")
-        print("\n============================| Summary |=============================")
-
+        # Sort broken references by file_path and line_number
         if self.broken_references:
-            print(print_red(f"[!] {len(self.broken_references)} broken references found:"))
             self.broken_references = sorted(
                 self.broken_references, key=lambda ref: (ref.file_path, ref.line_number)
             )
 
-            for broken_ref in self.broken_references:
-                print(f"{broken_ref.file_path}:{broken_ref.line_number}: {broken_ref.syntax}")
-        else:
-            if settings.no_color:
-                print("No broken references!")
+        if settings.quiet:
+            # Quiet mode: minimal output, no decorative headers or dividers
+            if self.broken_references:
+                count_msg = f"[!] {len(self.broken_references)} broken references found:"
+                if settings.no_color:
+                    print(count_msg)
+                else:
+                    print(print_red(count_msg))
+                for broken_ref in self.broken_references:
+                    print(f"{broken_ref.file_path}:{broken_ref.line_number}: {broken_ref.syntax}")
             else:
-                print(print_green("\U0001f389 No broken references!"))
+                if settings.no_color:
+                    print("No broken references!")
+                else:
+                    print(print_green("\U0001f389 No broken references!"))
+        else:
+            # Normal mode: current behavior with headers and dividers
+            print("\nReference check complete.")
+            print("\n============================| Summary |=============================")
 
-        print("====================================================================")
+            if self.broken_references:
+                count_msg = f"[!] {len(self.broken_references)} broken references found:"
+                if settings.no_color:
+                    print(count_msg)
+                else:
+                    print(print_red(count_msg))
+                for broken_ref in self.broken_references:
+                    ui_print(
+                        f"{broken_ref.file_path}:{broken_ref.line_number}: {broken_ref.syntax}"
+                    )
+            else:
+                if settings.no_color:
+                    print("No broken references!")
+                else:
+                    print(print_green("\U0001f389 No broken references!"))
+
+            print("====================================================================")
 
 
 def main() -> None:
@@ -102,7 +128,7 @@ def main() -> None:
 
     check_remote: bool = settings.check_remote
     if not check_remote:
-        print(
+        ui_print(
             print_yellow(
                 "[!] WARNING: Skipping remote reference check. Enable with arg --check-remote."
             )
@@ -114,15 +140,15 @@ def main() -> None:
         print(print_red("[!] No Markdown files specified or found."))
         sys.exit(1)
 
-    print(f"\n[+] {len(markdown_files)} Markdown files to check.")
+    ui_print(f"\n[+] {len(markdown_files)} Markdown files to check.")
     for file in markdown_files:
-        print(f"- {file}")
+        ui_print(f"- {file}")
 
     md_parser = MarkdownParser()
     checker = ReferenceChecker()
 
     for file in markdown_files:
-        print(f"\n[+] FILE: {file}")
+        ui_print(f"\n[+] FILE: {file}")
         references = md_parser.parse_markdown_file(file)
 
         basic_refs = references["basic_references"]
@@ -138,7 +164,7 @@ def main() -> None:
         checker.check_references(inline_links)
 
         if len(basic_refs) == 0 and len(image_refs) == 0 and len(inline_links) == 0:
-            print("No references found.")
+            ui_print("No references found.")
 
     checker.print_summary()
     if checker.broken_references:

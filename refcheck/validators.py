@@ -181,7 +181,7 @@ def is_valid_markdown_reference(ref: Reference) -> bool:
 
     # Check if the referenced header exists
     if referenced_header and not _header_exists(abs_target_path, referenced_header):
-        logger.error(f"Referenced header does not exist in {abs_target_path}: {referenced_header}")
+        logger.info(f"Referenced header does not exist in {abs_target_path}: {referenced_header}")
         return False
 
     return True

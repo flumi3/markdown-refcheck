@@ -58,6 +58,12 @@ def get_command_line_arguments() -> Namespace:
         action="store_true",
         help="Check remote references (HTTP/HTTPS links)",
     )  # type: ignore
+    parser.add_argument(
+        "-q",
+        "--quiet",
+        action="store_true",
+        help="Suppress non‑summary output (only show final summary)",
+    )  # type: ignore
     parser.add_argument("-nc", "--no-color", action="store_true", help="Turn off colored output")  # type: ignore
     parser.add_argument("-v", "--verbose", action="store_true", help="Enable verbose output")  # type: ignore
     parser.add_argument(

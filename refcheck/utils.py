@@ -29,7 +29,7 @@ def load_exclusion_patterns() -> list[str]:
         with open(IGNORE_FILE, "r", encoding="utf-8") as file:
             exclusions = [line.strip() for line in file if line.strip()]
 
-    print(print_yellow(f"[!] WARNING: Skipping these files and directories: {exclusions}"))
+    ui_print(print_yellow(f"[!] WARNING: Skipping these files and directories: {exclusions}"))
     return exclusions
 
 
@@ -52,7 +52,7 @@ def get_markdown_files_from_dir(root_dir: str, exclude: list[str] | None = None)
     """Traverse the directory to get all markdown files."""
     if exclude is None:
         exclude = []
-    print(f"[+] Searching for markdown files in {os.path.abspath(root_dir)} ...")
+    ui_print(f"[+] Searching for markdown files in {os.path.abspath(root_dir)} ...")
     exclude_set = set(os.path.normpath(path) for path in exclude)
     markdown_files = []
 
@@ -91,9 +91,25 @@ def get_markdown_files_from_args(paths: list[str], exclude: list[str] | None = N
             if norm_path.endswith(".md"):
                 markdown_files.add(norm_path)
         else:
-            print(print_yellow(f"[!] Warning: {path} is not a valid file or directory."))
+            ui_print(print_yellow(f"[!] Warning: {path} is not a valid file or directory."))
 
     return list(markdown_files)
+
+
+# ---------------------------------------------------------------------------
+# UI helper – centralised printing respecting the ``--quiet`` flag
+# ---------------------------------------------------------------------------
+def ui_print(message: str, *, end: str = "\n") -> None:
+    """Print *message* only when the CLI is **not** in quiet mode.
+
+    The function defensively checks for the ``quiet`` attribute using ``getattr``
+    so that unit tests which replace ``refcheck.utils.settings`` with a mock
+    (which may not define ``quiet``) still behave correctly.
+    """
+    # ``settings.quiet`` may be a MagicMock in tests; only suppress output when the
+    # attribute is explicitly ``True``.
+    if getattr(settings, "quiet", False) is not True:
+        print(message, end=end)
 
 
 def print_green_background(text: str) -> str:
