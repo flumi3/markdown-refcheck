@@ -21,6 +21,7 @@ class Settings:
             self._check_remote: bool = args.check_remote
             self._no_color: bool = args.no_color
             self._allow_absolute: bool = args.allow_absolute
+            self._quiet: bool = args.quiet
             self._exclude: list[str] = args.exclude
 
     def __str__(self) -> str:
@@ -53,6 +54,15 @@ class Settings:
     @property
     def allow_absolute(self) -> bool:
         return self._allow_absolute
+
+    @property
+    def quiet(self) -> bool:
+        """Return True when the ``--quiet`` flag is set.
+
+        The flag suppresses all non‑summary output.  It does **not** affect the
+        exit code or the final summary printed by ``ReferenceChecker``.
+        """
+        return getattr(self, "_quiet", False)
 
     @property
     def exclude(self) -> list[str]:

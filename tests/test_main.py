@@ -201,6 +201,7 @@ class TestReferenceChecker:
         """Test print_summary with no broken references."""
         checker = ReferenceChecker()
         with mock.patch("refcheck.main.settings") as mock_settings:
+            mock_settings.quiet = False
             mock_settings.no_color = True
             checker.print_summary()
 
@@ -226,6 +227,7 @@ class TestReferenceChecker:
         checker.broken_references = [broken_ref]
 
         with mock.patch("refcheck.main.settings") as mock_settings:
+            mock_settings.quiet = False
             mock_settings.no_color = True
             checker.print_summary()
 
@@ -270,6 +272,7 @@ class TestReferenceChecker:
         checker.broken_references = broken_refs
 
         with mock.patch("refcheck.main.settings") as mock_settings:
+            mock_settings.quiet = False
             mock_settings.no_color = True
             checker.print_summary()
 
@@ -277,6 +280,137 @@ class TestReferenceChecker:
         assert checker.broken_references[0].file_path == file1
         assert checker.broken_references[0].line_number == 5
         assert checker.broken_references[1].line_number == 10
+
+    def test_print_summary_quiet_no_broken(self, capsys):
+        """Test print_summary in quiet mode with no broken references."""
+        checker = ReferenceChecker()
+        with mock.patch("refcheck.main.settings") as mock_settings:
+            mock_settings.quiet = True
+            mock_settings.no_color = True
+            checker.print_summary()
+
+        captured = capsys.readouterr()
+        # In quiet mode, should only show success message, no header/dividers
+        assert "No broken references!" in captured.out
+        assert "Reference check complete" not in captured.out
+        assert "Summary" not in captured.out
+        assert "====" not in captured.out
+
+    def test_print_summary_quiet_no_broken_with_color(self, capsys):
+        """Test print_summary in quiet mode with no broken refs and color enabled."""
+        checker = ReferenceChecker()
+        with mock.patch("refcheck.main.settings") as mock_settings:
+            mock_settings.quiet = True
+            mock_settings.no_color = False
+            checker.print_summary()
+
+        captured = capsys.readouterr()
+        # Should show emoji success message
+        assert "\U0001f389" in captured.out  # Emoji character
+        assert "No broken references!" in captured.out
+        assert "Reference check complete" not in captured.out
+
+    def test_print_summary_quiet_with_broken(self, temp_markdown_file, capsys):
+        """Test print_summary in quiet mode with broken references."""
+        content = "# Test"
+        source_file = temp_markdown_file(content)
+
+        broken_ref = BrokenReference(
+            file_path=source_file,
+            line_number=94,
+            syntax="[CONTRIBUTING.md](../../CONTRIBUTING.md#commit-convention___)",
+            link="../../CONTRIBUTING.md#commit-convention___",
+            is_remote=False,
+            status="BROKEN",
+        )
+
+        checker = ReferenceChecker()
+        checker.broken_references = [broken_ref]
+
+        with mock.patch("refcheck.main.settings") as mock_settings:
+            mock_settings.quiet = True
+            mock_settings.no_color = True
+            checker.print_summary()
+
+        captured = capsys.readouterr()
+        # In quiet mode, should show count and per-line format
+        assert "[!] 1 broken references found:" in captured.out
+        assert (
+            f"{source_file}:94: [CONTRIBUTING.md](../../CONTRIBUTING.md#commit-convention___)"
+            in captured.out
+        )
+        # Should NOT show decorative elements
+        assert "Reference check complete" not in captured.out
+        assert "Summary" not in captured.out
+        assert "====" not in captured.out
+
+    def test_print_summary_quiet_multiple_broken_sorted(self, temp_markdown_file, capsys):
+        """Test quiet mode with multiple broken refs shows sorted output without decorations."""
+        content = "# Test"
+        file1 = temp_markdown_file(content, "file1.md")
+        file2 = temp_markdown_file(content, "file2.md")
+
+        broken_refs = [
+            BrokenReference(
+                file_path=file2,
+                line_number=5,
+                syntax="[link](missing2.md)",
+                link="missing2.md",
+                is_remote=False,
+                status="BROKEN",
+            ),
+            BrokenReference(
+                file_path=file1,
+                line_number=10,
+                syntax="[link](missing1.md)",
+                link="missing1.md",
+                is_remote=False,
+                status="BROKEN",
+            ),
+            BrokenReference(
+                file_path=file1,
+                line_number=5,
+                syntax="[link](missing3.md)",
+                link="missing3.md",
+                is_remote=False,
+                status="BROKEN",
+            ),
+        ]
+
+        checker = ReferenceChecker()
+        checker.broken_references = broken_refs
+
+        with mock.patch("refcheck.main.settings") as mock_settings:
+            mock_settings.quiet = True
+            mock_settings.no_color = True
+            checker.print_summary()
+
+        captured = capsys.readouterr()
+        # Verify count header
+        assert "[!] 3 broken references found:" in captured.out
+        # Verify all refs are present
+        assert "missing1.md" in captured.out
+        assert "missing2.md" in captured.out
+        assert "missing3.md" in captured.out
+        # Verify sorting (file1:5 before file1:10 before file2:5)
+        output_lines = captured.out.split("\n")
+        file1_line5_idx = None
+        file1_line10_idx = None
+        file2_line5_idx = None
+        for idx, line in enumerate(output_lines):
+            if f"{file1}:5:" in line:
+                file1_line5_idx = idx
+            elif f"{file1}:10:" in line:
+                file1_line10_idx = idx
+            elif f"{file2}:5:" in line:
+                file2_line5_idx = idx
+
+        assert file1_line5_idx is not None
+        assert file1_line10_idx is not None
+        assert file2_line5_idx is not None
+        assert file1_line5_idx < file1_line10_idx < file2_line5_idx
+        # Verify no decorations
+        assert "Reference check complete" not in captured.out
 
 
 class TestMainFunction:
