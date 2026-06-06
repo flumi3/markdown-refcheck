@@ -25,7 +25,7 @@ class BrokenReference(Reference):
 
 
 class ReferenceChecker:
-    def __init__(self):
+    def __init__(self) -> None:
         self.broken_references: List[BrokenReference] = []
 
     def check_references(self, references: list[Reference]):
