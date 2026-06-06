@@ -29,7 +29,9 @@ def load_exclusion_patterns() -> list[str]:
         with open(IGNORE_FILE, "r", encoding="utf-8") as file:
             exclusions = [line.strip() for line in file if line.strip()]
 
-    ui_print(print_yellow(f"[!] WARNING: Skipping these files and directories: {exclusions}"))
+    ui_print(
+        f"[!] WARNING: Skipping these files and directories: {exclusions}", color_fn=print_yellow
+    )
     return exclusions
 
 
@@ -91,7 +93,9 @@ def get_markdown_files_from_args(paths: list[str], exclude: list[str] | None = N
             if norm_path.endswith(".md"):
                 markdown_files.add(norm_path)
         else:
-            ui_print(print_yellow(f"[!] Warning: {path} is not a valid file or directory."))
+            ui_print(
+                f"[!] Warning: {path} is not a valid file or directory.", color_fn=print_yellow
+            )
 
     return list(markdown_files)
 
@@ -99,13 +103,21 @@ def get_markdown_files_from_args(paths: list[str], exclude: list[str] | None = N
 # ---------------------------------------------------------------------------
 # UI helper – centralised printing respecting the ``--quiet`` flag
 # ---------------------------------------------------------------------------
-def ui_print(message: str, *, end: str = "\n") -> None:
+def ui_print(message: str, *, color_fn=None, end: str = "\n") -> None:
     """Print *message* only when the CLI is **not** in quiet mode.
+
+    If *color_fn* is provided, it will be applied to the message before printing.
+    Color functions (e.g., print_red, print_yellow) automatically respect the
+    ``--no-color`` flag, so the message will either be colorized or plain text.
 
     The function defensively checks for the ``quiet`` attribute using ``getattr``
     so that unit tests which replace ``refcheck.utils.settings`` with a mock
     (which may not define ``quiet``) still behave correctly.
     """
+    # Apply color function if provided
+    if color_fn is not None:
+        message = color_fn(message)
+
     # ``settings.quiet`` may be a MagicMock in tests; only suppress output when the
     # attribute is explicitly ``True``.
     if getattr(settings, "quiet", False) is not True:

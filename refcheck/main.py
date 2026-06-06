@@ -83,17 +83,11 @@ class ReferenceChecker:
             # Quiet mode: minimal output, no decorative headers or dividers
             if self.broken_references:
                 count_msg = f"[!] {len(self.broken_references)} broken references found:"
-                if settings.no_color:
-                    print(count_msg)
-                else:
-                    print(print_red(count_msg))
+                print(print_red(count_msg))
                 for broken_ref in self.broken_references:
                     print(f"{broken_ref.file_path}:{broken_ref.line_number}: {broken_ref.syntax}")
             else:
-                if settings.no_color:
-                    print("No broken references!")
-                else:
-                    print(print_green("\U0001f389 No broken references!"))
+                print(print_green("\U0001f389 No broken references!"))
         else:
             # Normal mode: current behavior with headers and dividers
             print("\nReference check complete.")
@@ -101,19 +95,13 @@ class ReferenceChecker:
 
             if self.broken_references:
                 count_msg = f"[!] {len(self.broken_references)} broken references found:"
-                if settings.no_color:
-                    print(count_msg)
-                else:
-                    print(print_red(count_msg))
+                print(print_red(count_msg))
                 for broken_ref in self.broken_references:
                     ui_print(
                         f"{broken_ref.file_path}:{broken_ref.line_number}: {broken_ref.syntax}"
                     )
             else:
-                if settings.no_color:
-                    print("No broken references!")
-                else:
-                    print(print_green("\U0001f389 No broken references!"))
+                print(print_green("\U0001f389 No broken references!"))
 
             print("====================================================================")
 
@@ -129,9 +117,8 @@ def main() -> None:
     check_remote: bool = settings.check_remote
     if not check_remote:
         ui_print(
-            print_yellow(
-                "[!] WARNING: Skipping remote reference check. Enable with arg --check-remote."
-            )
+            "[!] WARNING: Skipping remote reference check. Enable with arg --check-remote.",
+            color_fn=print_yellow,
         )
 
     # Retrieve all markdown files specified by the user
