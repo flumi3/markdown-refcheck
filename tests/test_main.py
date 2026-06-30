@@ -578,6 +578,143 @@ class TestMainFunction:
         captured = capsys.readouterr()
         assert "2 Markdown files to check" in captured.out
 
+    def test_main_reconfigures_stdout_to_utf8(self, temp_markdown_file):
+        """Test that main() reconfigures stdout/stderr to UTF-8 to avoid UnicodeEncodeError
+        on Windows consoles that use a narrow encoding such as cp1252."""
+        content = "# Test"
+        test_file = temp_markdown_file(content)
+
+        with mock.patch("refcheck.main.settings") as mock_settings:
+            mock_settings.paths = [test_file]
+            mock_settings.exclude = []
+            mock_settings.verbose = False
+            mock_settings.check_remote = False
+            mock_settings.no_color = True
+            mock_settings.is_valid.return_value = True
+
+            mock_stdout = mock.MagicMock()
+            mock_stderr = mock.MagicMock()
+
+            with (
+                mock.patch("refcheck.main.get_markdown_files_from_args", return_value=[test_file]),
+                mock.patch("sys.stdout", mock_stdout),
+                mock.patch("sys.stderr", mock_stderr),
+            ):
+                with pytest.raises(SystemExit):
+                    main()
+
+        mock_stdout.reconfigure.assert_called_once_with(encoding="utf-8", errors="backslashreplace")
+        mock_stderr.reconfigure.assert_called_once_with(encoding="utf-8", errors="backslashreplace")
+
+    def test_main_reconfigure_skipped_when_not_available(self, temp_markdown_file):
+        """Test that main() does not crash when stdout/stderr lack a reconfigure method
+        (e.g. when output is redirected to a file or a legacy stream)."""
+        content = "# Test"
+        test_file = temp_markdown_file(content)
+
+        with mock.patch("refcheck.main.settings") as mock_settings:
+            mock_settings.paths = [test_file]
+            mock_settings.exclude = []
+            mock_settings.verbose = False
+            mock_settings.check_remote = False
+            mock_settings.no_color = True
+            mock_settings.is_valid.return_value = True
+
+            # Simulate a stream that does not expose reconfigure (e.g. a plain BytesIO wrapper).
+            class _NoReconfigure:
+                def write(self, s):
+                    pass
+
+                def flush(self):
+                    pass
+
+            with (
+                mock.patch("refcheck.main.get_markdown_files_from_args", return_value=[test_file]),
+                mock.patch("sys.stdout", _NoReconfigure()),
+                mock.patch("sys.stderr", _NoReconfigure()),
+            ):
+                # Should not raise AttributeError or any other exception.
+                with pytest.raises(SystemExit):
+                    main()
+
+
+class TestUnicodeHandling:
+    """Tests that Unicode characters in reference syntax are handled without errors."""
+
+    def test_check_references_unicode_syntax_no_error(self, temp_markdown_file, capsys):
+        """Regression test: references whose syntax contains characters outside cp1252
+        (e.g. the arrow '→' / U+2192) must not raise UnicodeEncodeError when printed."""
+        content = "# Test"
+        source_file = temp_markdown_file(content, "source.md")
+        temp_markdown_file(content, "target.md")
+
+        # Simulate a link text that contains a non-cp1252 character (→).
+        ref = Reference(
+            file_path=source_file,
+            line_number=1,
+            syntax="[Step A → Step B](target.md)",
+            link="target.md",
+            is_remote=False,
+        )
+
+        checker = ReferenceChecker()
+        with mock.patch("refcheck.main.settings") as mock_settings:
+            mock_settings.check_remote = False
+            mock_settings.no_color = True
+            # Must not raise any exception.
+            checker.check_references([ref])
+
+        captured = capsys.readouterr()
+        assert "→" in captured.out
+        assert len(checker.broken_references) == 0
+
+    def test_main_with_cp1252_stdout_does_not_raise(self, temp_markdown_file):
+        """Behavioral regression for the Windows cp1252 UnicodeEncodeError.
+
+        Patches sys.stdout with a real TextIOWrapper that starts with cp1252 encoding
+        (mimicking a Windows console) and verifies that main() reconfigures it to UTF-8
+        so that reference syntax containing '→' (U+2192) is printed without crashing.
+        """
+        import io
+
+        source_content = "[Step A → Step B](target.md)"
+        temp_markdown_file("# Target", "target.md")
+        source_file = temp_markdown_file(source_content, "source.md")
+
+        # Build a cp1252-encoded stdout that mirrors a Windows narrow-encoding console.
+        stdout_buf = io.BytesIO()
+        narrow_stdout = io.TextIOWrapper(stdout_buf, encoding="cp1252")
+        stderr_buf = io.BytesIO()
+        narrow_stderr = io.TextIOWrapper(stderr_buf, encoding="cp1252")
+
+        with mock.patch("refcheck.main.settings") as mock_settings:
+            mock_settings.paths = [source_file]
+            mock_settings.exclude = []
+            mock_settings.verbose = False
+            mock_settings.check_remote = False
+            mock_settings.no_color = True
+            mock_settings.quiet = False
+            mock_settings.is_valid.return_value = True
+
+            with (
+                mock.patch(
+                    "refcheck.main.get_markdown_files_from_args", return_value=[source_file]
+                ),
+                mock.patch("sys.stdout", narrow_stdout),
+                mock.patch("sys.stderr", narrow_stderr),
+            ):
+                # Without the fix this would raise UnicodeEncodeError because '→' cannot
+                # be encoded in cp1252.  With the fix, main() reconfigures stdout to UTF-8
+                # before any printing occurs.
+                with pytest.raises(SystemExit) as exc_info:
+                    main()
+
+        assert exc_info.value.code == 0
+
+        narrow_stdout.flush()
+        output = stdout_buf.getvalue().decode("utf-8")
+        assert "→" in output
+
 
 class TestBrokenReferenceDataClass:
     """Tests for BrokenReference data class."""
