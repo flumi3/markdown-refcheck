@@ -1,6 +1,51 @@
 # CHANGELOG
 
 
+## v0.6.2 (2026-06-30)
+
+### Bug Fixes
+
+- Handle UnicodeEncodeError on Windows consoles with narrow encodings
+  ([#120](https://github.com/flumi3/markdown-refcheck/pull/120),
+  [`125c712`](https://github.com/flumi3/markdown-refcheck/commit/125c712c683accdd44367210015db730d117eaa0))
+
+On Windows, the default console encoding (e.g. cp1252) cannot represent all Unicode characters that
+  may appear in markdown content (e.g. the arrow character → / U+2192). This caused a
+  UnicodeEncodeError when refcheck printed reference syntax containing such characters.
+
+Reconfigure sys.stdout and sys.stderr to UTF-8 (with errors='replace' as a safety net) at the start
+  of main(). The hasattr guard ensures the fix is a no-op on streams that do not expose reconfigure
+  (e.g. legacy redirected streams).
+
+Adds three regression tests: - Asserts reconfigure is called with the correct arguments - Asserts
+  main() does not crash when reconfigure is unavailable - Exercises the exact failure scenario (→ in
+  reference syntax)
+
+Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>
+
+### Chores
+
+- **deps**: Bump markdown-it ([#119](https://github.com/flumi3/markdown-refcheck/pull/119),
+  [`2bd3a88`](https://github.com/flumi3/markdown-refcheck/commit/2bd3a88fbf65c389186c2de841003177df64a640))
+
+Bumps the npm_and_yarn group with 1 update in the / directory:
+  [markdown-it](https://github.com/markdown-it/markdown-it).
+
+Updates `markdown-it` from 14.1.1 to 14.2.0 -
+  [Changelog](https://github.com/markdown-it/markdown-it/blob/master/CHANGELOG.md) -
+  [Commits](https://github.com/markdown-it/markdown-it/compare/14.1.1...14.2.0)
+
+--- updated-dependencies: - dependency-name: markdown-it dependency-version: 14.2.0
+
+dependency-type: indirect
+
+dependency-group: npm_and_yarn ...
+
+Signed-off-by: dependabot[bot] <support@github.com>
+
+Co-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+
+
 ## v0.6.1 (2026-06-06)
 
 ### Bug Fixes
