@@ -107,6 +107,14 @@ class ReferenceChecker:
 
 
 def main() -> None:
+    # On Windows the default console encoding (e.g. cp1252) cannot represent all Unicode
+    # characters that may appear in markdown content.  Reconfigure stdout/stderr to UTF-8
+    # so that references containing characters like '→' are printed correctly.
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8", errors="backslashreplace")
+    if hasattr(sys.stderr, "reconfigure"):
+        sys.stderr.reconfigure(encoding="utf-8", errors="backslashreplace")
+
     # Check if settings configuration is valid
     if not settings.is_valid():
         sys.exit(1)
